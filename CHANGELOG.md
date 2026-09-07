@@ -6,7 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 8: Competency & AI Matching (Skill-gap calculation, radar charts, scikit-learn recommendation, trainer matcher)
+
+## [0.9.0] - 2026-09-08
+### Added (Phase 8 — Competency & Intelligent Matching Complete)
+- Canonical IMD/MoES competency taxonomy seeded during database initialization, with trainee competency matrices and role-benchmark readiness analysis.
+- Course-to-competency yield mappings and assessment-to-competency mappings, including assessment-based verified proficiency updates.
+- Deterministic, explainable NumPy/scikit-learn cosine course recommendations based only on live mapped course yields.
+- Deterministic trainer-subject matching using canonical competency vectors, verified experience, and recorded trainee-feedback scores.
+- Competency intelligence dashboard with radar visualization, role gap breakdowns, recommendation rationale, and trainer matching console.
+- Phase 8 backend test coverage for taxonomy, RBAC, matrices, gap formulas, recommendation ranking, trainer matching, mappings, and assessment updates.
+- Verified 55 backend tests passing and a successful frontend production build.
 
 ---
 

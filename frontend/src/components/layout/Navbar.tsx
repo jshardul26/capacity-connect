@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap, BookOpen, Award } from 'lucide-react';
+import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap, BookOpen, Award, BrainCircuit } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 export const Navbar: React.FC = () => {
@@ -13,6 +13,7 @@ export const Navbar: React.FC = () => {
     openTraineeModal,
     openTrainerModal,
     openAssessmentModal,
+    openCompetencyModal,
   } = useAuthStore();
 
   const navLinks = [
@@ -108,6 +109,16 @@ export const Navbar: React.FC = () => {
                 >
                   <Award className="w-3.5 h-3.5 text-blue-700" />
                   <span>Assessments</span>
+                </button>
+
+                {/* Competency & Skill Gap Command Center Button */}
+                <button
+                  onClick={openCompetencyModal}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-purple-950 bg-purple-100 hover:bg-purple-200 border border-purple-300 shadow-sm transition"
+                  title="Open Competency & Skill-Gap Command Center"
+                >
+                  <BrainCircuit className="w-3.5 h-3.5 text-purple-700" />
+                  <span>Skill Gaps</span>
                 </button>
 
                 {/* User Session Pill */}
@@ -251,6 +262,16 @@ export const Navbar: React.FC = () => {
                 >
                   <Award className="w-4 h-4 text-blue-700" />
                   <span>Assessment &amp; Examination Desk</span>
+                </button>
+                <button
+                  onClick={() => {
+                    openCompetencyModal();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-purple-950 bg-purple-100 border border-purple-300"
+                >
+                  <BrainCircuit className="w-4 h-4 text-purple-700" />
+                  <span>Competency &amp; Skill Gaps</span>
                 </button>
               </div>
             ) : (

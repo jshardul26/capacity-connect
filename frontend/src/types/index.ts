@@ -50,23 +50,10 @@ export interface CourseCardData {
   description: string;
 }
 
-/**
- * CompetencyItem: UI structure for skill-gap radar vectors and matrices.
- * In Phase 8 (Competency & AI Matching), this will be populated from GET /api/v1/competency/trainee/{user_id}/matrix.
- */
-export interface CompetencyItem {
-  id: string;
-  name: string;
-  domain: string;
-  currentProficiency: number; // 0.0 to 1.0
-  targetBenchmark: number;    // 0.0 to 1.0
-  recommendedCourse: string;
-}
-
 export * from './auth';
 export * from './trainee';
 export * from './trainer';
 export * from './learning';
 export * from './assessment';
 export * from './admin';
-
+export * from './competency';

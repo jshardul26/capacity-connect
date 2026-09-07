@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import Base, engine, async_session_factory
 from app.core.security import get_password_hash
 from app.models.user import Role, User
+from app.models.competency import Competency
+from app.ai_engine.competency_gap import DEFAULT_COMPETENCIES
 
 logger = logging.getLogger("capacity_connect.init_db")
 
@@ -40,7 +42,19 @@ async def init_db() -> None:
 
         await session.commit()
 
-        # 2. Seed Initial Administrator if none exists
+        # 2. Seed the canonical competency taxonomy.  These records are part of
+        # the application baseline, rather than endpoint-triggered demo data.
+        for competency_data in DEFAULT_COMPETENCIES:
+            result = await session.execute(
+                select(Competency).where(Competency.id == competency_data["id"])
+            )
+            if not result.scalar_one_or_none():
+                session.add(Competency(**competency_data))
+                logger.info("Seeded canonical competency: %s", competency_data["name"])
+
+        await session.commit()
+
+        # 3. Seed Initial Administrator if none exists
         result = await session.execute(select(Role).where(Role.name == "admin"))
         admin_role = result.scalar_one_or_none()
 

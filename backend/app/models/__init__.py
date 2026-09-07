@@ -26,6 +26,11 @@ from app.models.admin import (
     Achievement,
     AuditLog,
 )
+from app.models.competency import (
+    Competency,
+    TraineeCompetency,
+    CourseCompetency,
+)
 
 __all__ = [
     "User",
@@ -54,4 +59,7 @@ __all__ = [
     "Notification",
     "Achievement",
     "AuditLog",
+    "Competency",
+    "TraineeCompetency",
+    "CourseCompetency",
 ]

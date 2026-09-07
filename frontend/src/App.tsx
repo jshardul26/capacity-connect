@@ -20,6 +20,7 @@ import { TraineeProfileModal } from './components/trainee/TraineeProfileModal';
 import { TrainerStudioModal } from './components/trainer/TrainerStudioModal';
 import { CoursePlayerModal } from './components/course/CoursePlayerModal';
 import { AssessmentCenterModal } from './components/assessment/AssessmentCenterModal';
+import { CompetencyDashboardModal } from './components/competency/CompetencyDashboardModal';
 import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
 import { HealthResponse } from './types';
@@ -37,6 +38,8 @@ export const App: React.FC = () => {
     isAssessmentModalOpen,
     closeAssessmentModal,
     selectedAssessmentId,
+    isCompetencyModalOpen,
+    closeCompetencyModal,
     loadSession,
   } = useAuthStore();
 
@@ -115,6 +118,10 @@ export const App: React.FC = () => {
         isOpen={isAssessmentModalOpen}
         onClose={closeAssessmentModal}
         initialAssessmentId={selectedAssessmentId}
+      />
+      <CompetencyDashboardModal
+        isOpen={isCompetencyModalOpen}
+        onClose={closeCompetencyModal}
       />
     </div>
   );

@@ -5,7 +5,7 @@ from typing import List, Optional, Union
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, or_
+from sqlalchemy import select, func, or_, and_
 from sqlalchemy.orm import selectinload, joinedload
 
 from app.core.database import get_db
@@ -13,6 +13,7 @@ from app.core.dependencies import get_current_user, require_approved_user, requi
 from app.models.user import User
 from app.models.trainer import Course, Assessment, Question
 from app.models.assessment import AssessmentAttempt, AssessmentAnswer
+from app.models.competency import TraineeCompetency, CourseCompetency
 from app.schemas.assessment import (
     QuestionOptionItem,
     QuestionCreate,
@@ -670,6 +671,44 @@ async def submit_assessment_answers(
     attempt.is_passed = is_passed
     attempt.attempt_status = final_status
     attempt.attempt_signature = signature
+
+    # 5. Assessment-Based Competency Updates (Phase 8)
+    if is_passed:
+        earned_ratio = min(1.0, max(0.0, total_score / max(1.0, assessment.total_marks)))
+        target_comps = []
+        if getattr(assessment, "competency_id", None):
+            target_comps.append((assessment.competency_id, round(earned_ratio, 2)))
+
+        if assessment.course_id:
+            cc_res = await db.execute(
+                select(CourseCompetency).where(CourseCompetency.course_id == assessment.course_id)
+            )
+            for cc in cc_res.scalars().all():
+                level_yield = round(cc.yield_level * earned_ratio, 2)
+                target_comps.append((cc.competency_id, level_yield))
+
+        for c_id, score_lvl in target_comps:
+            tc_res = await db.execute(
+                select(TraineeCompetency).where(
+                    and_(
+                        TraineeCompetency.user_id == current_user.id,
+                        TraineeCompetency.competency_id == c_id
+                    )
+                )
+            )
+            existing_tc = tc_res.scalar_one_or_none()
+            if existing_tc:
+                if score_lvl > existing_tc.proficiency_level:
+                    existing_tc.proficiency_level = score_lvl
+                existing_tc.last_evaluated_at = now
+            else:
+                new_tc = TraineeCompetency(
+                    user_id=current_user.id,
+                    competency_id=c_id,
+                    proficiency_level=score_lvl,
+                    last_evaluated_at=now
+                )
+                db.add(new_tc)
 
     await db.commit()
     await db.refresh(attempt)

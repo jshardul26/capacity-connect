@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements
+from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements, competency
 
 api_router = APIRouter()
 
@@ -28,3 +28,5 @@ api_router.include_router(assessments.router, prefix="/assessments", tags=["Asse
 # Phase 7: Announcements, Notifications & Achievements Public/User Router
 api_router.include_router(announcements.router, tags=["Announcements & Notifications"])
 
+# Phase 8: Competency & Intelligent Matching Router
+api_router.include_router(competency.router, tags=["Competency & Matching"])

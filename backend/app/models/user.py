@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from app.models.learning import CourseEnrollment, LessonProgress, CourseFeedback
     from app.models.assessment import AssessmentAttempt
     from app.models.admin import Announcement, Notification, Achievement, AuditLog
+    from app.models.competency import TraineeCompetency
 
 from app.core.database import Base
 
@@ -162,6 +163,12 @@ class User(Base):
     admin_audit_logs: Mapped[list["AuditLog"]] = relationship(
         "AuditLog",
         back_populates="admin_user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    competencies: Mapped[list["TraineeCompetency"]] = relationship(
+        "TraineeCompetency",
+        back_populates="user",
         cascade="all, delete-orphan",
         lazy="selectin"
     )

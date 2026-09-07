@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from app.models.user import User, TrainerProfile
     from app.models.learning import LearningResource, CourseEnrollment, LessonProgress, CourseFeedback
     from app.models.assessment import AssessmentAttempt, AssessmentAnswer
+    from app.models.competency import Competency, CourseCompetency
 
 
 def generate_uuid_str() -> str:
@@ -119,6 +120,12 @@ class Course(Base):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+    competencies_yield: Mapped[list["CourseCompetency"]] = relationship(
+        "CourseCompetency",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
 
 class CourseModule(Base):
@@ -191,6 +198,12 @@ class Assessment(Base):
         nullable=True,
         index=True
     )
+    competency_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("competencies.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
     created_by: Mapped[str] = mapped_column(
         String(36),
         ForeignKey("users.id", ondelete="CASCADE"),
@@ -214,6 +227,7 @@ class Assessment(Base):
 
     # Relationships
     course: Mapped[Optional["Course"]] = relationship("Course", back_populates="assessments")
+    competency: Mapped[Optional["Competency"]] = relationship("Competency", back_populates="assessments")
     creator: Mapped["User"] = relationship("User", back_populates="assessments_created")
     questions: Mapped[list["Question"]] = relationship(
         "Question",

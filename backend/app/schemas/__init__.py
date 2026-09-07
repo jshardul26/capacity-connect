@@ -100,6 +100,26 @@ from app.schemas.admin import (
     AuditLogResponse,
 )
 
+from app.schemas.competency import (
+    CompetencyBase,
+    CompetencyCreate,
+    CompetencyResponse,
+    CompetencyTaxonomyResponse,
+    TraineeCompetencyItem,
+    TraineeCompetencyMatrixResponse,
+    TraineeCompetencyUpdateRequest,
+    CompetencyGapItem,
+    SkillGapAnalysisResponse,
+    CourseCompetencyItem,
+    CourseCompetencyMapRequest,
+    AssessmentCompetencyMapRequest,
+    CourseRecommendationItem,
+    TrainerMatchRequest,
+    TrainerMatchItem,
+    TrainerMatchResponse,
+    RoleBenchmarkResponse,
+)
+
 __all__ = [
     "HealthResponse",
     "DatabaseHealthResponse",
@@ -187,4 +207,21 @@ __all__ = [
     "AchievementCreate",
     "AchievementResponse",
     "AuditLogResponse",
+    "CompetencyBase",
+    "CompetencyCreate",
+    "CompetencyResponse",
+    "CompetencyTaxonomyResponse",
+    "TraineeCompetencyItem",
+    "TraineeCompetencyMatrixResponse",
+    "TraineeCompetencyUpdateRequest",
+    "CompetencyGapItem",
+    "SkillGapAnalysisResponse",
+    "CourseCompetencyItem",
+    "CourseCompetencyMapRequest",
+    "AssessmentCompetencyMapRequest",
+    "CourseRecommendationItem",
+    "TrainerMatchRequest",
+    "TrainerMatchItem",
+    "TrainerMatchResponse",
+    "RoleBenchmarkResponse",
 ]

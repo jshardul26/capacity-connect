@@ -22,6 +22,7 @@ interface AuthState {
   selectedCourseIdForPlayer: string | null;
   isAssessmentModalOpen: boolean;
   selectedAssessmentId: string | null;
+  isCompetencyModalOpen: boolean;
 
   // Actions
   openAuthModal: (tab?: 'login' | 'register') => void;
@@ -37,6 +38,8 @@ interface AuthState {
   closeCoursePlayer: () => void;
   openAssessmentModal: (assessmentId?: string | null) => void;
   closeAssessmentModal: () => void;
+  openCompetencyModal: () => void;
+  closeCompetencyModal: () => void;
   clearError: () => void;
   login: (credentials: UserLoginRequest) => Promise<void>;
   register: (data: UserRegisterRequest) => Promise<UserRegisterResponse>;
@@ -60,6 +63,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   selectedCourseIdForPlayer: null,
   isAssessmentModalOpen: false,
   selectedAssessmentId: null,
+  isCompetencyModalOpen: false,
 
   openAuthModal: (tab = 'login') => {
     set({ isAuthModalOpen: true, authModalTab: tab, error: null });
@@ -107,6 +111,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   closeAssessmentModal: () => {
     set({ isAssessmentModalOpen: false, selectedAssessmentId: null });
+  },
+
+  openCompetencyModal: () => {
+    set({ isCompetencyModalOpen: true });
+  },
+
+  closeCompetencyModal: () => {
+    set({ isCompetencyModalOpen: false });
   },
 
   setAuthModalTab: (tab) => {
