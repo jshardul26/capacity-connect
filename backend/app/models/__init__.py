@@ -10,6 +10,13 @@ from app.models.trainer import (
     Question,
 )
 
+from app.models.learning import (
+    LearningResource,
+    CourseEnrollment,
+    LessonProgress,
+    CourseFeedback,
+)
+
 __all__ = [
     "User",
     "Role",
@@ -27,4 +34,8 @@ __all__ = [
     "Lesson",
     "Assessment",
     "Question",
+    "LearningResource",
+    "CourseEnrollment",
+    "LessonProgress",
+    "CourseFeedback",
 ]

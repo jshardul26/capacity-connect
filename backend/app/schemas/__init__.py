@@ -49,6 +49,19 @@ from app.schemas.trainer import (
     CourseAnalyticsResponse,
 )
 
+from app.schemas.learning import (
+    LearningResourceCreate,
+    LearningResourceResponse,
+    CourseEnrollmentResponse,
+    LessonProgressUpdate,
+    LessonProgressResponse,
+    CourseFeedbackCreate,
+    CourseFeedbackResponse,
+    CourseCatalogItem,
+    CourseDetailResponse,
+    EnrolledCourseSummary,
+)
+
 __all__ = [
     "HealthResponse",
     "DatabaseHealthResponse",
@@ -94,4 +107,14 @@ __all__ = [
     "QuestionnaireResponse",
     "TrainerDashboardResponse",
     "CourseAnalyticsResponse",
+    "LearningResourceCreate",
+    "LearningResourceResponse",
+    "CourseEnrollmentResponse",
+    "LessonProgressUpdate",
+    "LessonProgressResponse",
+    "CourseFeedbackCreate",
+    "CourseFeedbackResponse",
+    "CourseCatalogItem",
+    "CourseDetailResponse",
+    "EnrolledCourseSummary",
 ]

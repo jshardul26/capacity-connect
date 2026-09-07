@@ -6,7 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 5: Learning Management (Course catalog, modules, lessons, video streaming, progress tracking)
+- Phase 6: Assessment System (MCQ engine, question bank, timed quiz runner, automated grading)
+
+---
+
+## [0.6.0] - 2026-09-08
+### Added (Phase 5 — Learning Management Complete)
+- **LMS Database Models & Relationships (`backend/app/models/learning.py`):**
+  - Implemented `LearningResource` model with `resource_type` (video, presentation, study_material), `file_url`, `file_size_bytes`, `sha256_checksum`, and `duration_seconds`.
+  - Implemented `CourseEnrollment` model recording trainee enrollments, status (`in_progress`, `completed`, `dropped`), `enrolled_at`, and `completed_at`.
+  - Implemented `LessonProgress` (`progress` table) recording individual lesson watch times (`watch_time_seconds`), completion status (`is_completed`), and `last_accessed_at`.
+  - Implemented `CourseFeedback` (`course_feedback` table) storing numerical ratings (1–5) and review text.
+  - Connected bi-directional relationships with `Course`, `Lesson`, and `User` with cascade rules.
+- **RESTful Learning Management API (`/api/v1/courses`):**
+  - `GET /api/v1/courses`: Public course catalog discovery with filtering (`category`, `level`, `search`) and pagination (`page`, `limit`). Excludes draft/unpublished courses.
+  - `GET /api/v1/courses/enrolled/me`: Trainee enrolled courses query with live progress percentage calculation and completed lesson counts.
+  - `GET /api/v1/courses/{course_id}`: Full course structure endpoint delivering modules, ordered lessons, attached learning resources, user progress state, average ratings, and review comments.
+  - `POST /api/v1/courses/{course_id}/enroll`: Trainee course enrollment endpoint with duplicate handling and dropped-course re-enrollment reactivation.
+  - `DELETE /api/v1/courses/{course_id}/enroll`: Trainee unenrollment endpoint marking enrollment as dropped.
+  - `POST /api/v1/courses/{course_id}/progress`: Upsert lesson watch time and completion. Automatically triggers course enrollment completion and timestamps when all lessons are completed.
+  - `POST /api/v1/courses/{course_id}/feedback`: Course rating and review submission for enrolled trainees.
+  - `POST /api/v1/courses/{course_id}/modules/{module_id}/lessons/{lesson_id}/resources`: Content delivery management allowing trainers/admins to attach video, presentation, or PDF resources to lessons.
+  - `DELETE /api/v1/courses/resources/{resource_id}`: Secure deletion of learning resources with owner/admin authorization.
+- **Frontend Course Discovery & Interactive Course Player:**
+  - `types/learning.ts`: Complete TypeScript types matching Pydantic v2 schemas.
+  - `services/courseService.ts`: Fully typed client library for courses, enrollment, progress, feedback, and resources.
+  - `CoursePlayerModal.tsx`: Comprehensive LMS course viewer featuring:
+    - Multi-tab content delivery: Video Streaming Player with scrubber and speed controls, Slide Presentation deck viewer, PDF study materials with SHA-256 verification badges, and lesson notes.
+    - One-click "Mark Lesson Complete" tracking with real-time sync to backend.
+    - Interactive 1–5 star rating and review feedback form with review list.
+    - Curriculum syllabus sidebar with module hierarchy, duration badges, and completion checkmarks.
+    - Automatic enrollment trigger for un-enrolled learners.
+  - `CoursesSection.tsx`: Dynamic catalog integration with backend fallback to preview data, "Start Learning" launcher, and syllabus inspector.
+  - `App.tsx`: Mounted `CoursePlayerModal` driven by Zustand state in `useAuthStore.ts`.
+- **Automated Testing Suite (`tests/backend/test_courses.py`):**
+  - Catalog discovery, unpublished course filtering, category/level/search filters.
+  - Course enrollment, querying `/enrolled/me`, dropping, and re-enrolling.
+  - Course structure inspection and multi-resource attachment with RBAC guards.
+  - Watch duration tracking, progress percentage calculation, and automatic course completion.
+  - Course feedback submission, reviews list, and non-enrolled user access barrier.
+  - 33/33 backend tests passing across all project phases.
+  - Frontend production build verified: 0 TypeScript errors.
 
 ---
 

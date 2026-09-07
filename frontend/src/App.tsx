@@ -17,6 +17,7 @@ import { AuthModal } from './components/auth/AuthModal';
 import { AdminApprovalModal } from './components/admin/AdminApprovalModal';
 import { TraineeProfileModal } from './components/trainee/TraineeProfileModal';
 import { TrainerStudioModal } from './components/trainer/TrainerStudioModal';
+import { CoursePlayerModal } from './components/course/CoursePlayerModal';
 import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
 import { HealthResponse } from './types';
@@ -28,6 +29,9 @@ export const App: React.FC = () => {
     closeAdminModal,
     isTraineeModalOpen,
     closeTraineeModal,
+    isCoursePlayerOpen,
+    closeCoursePlayer,
+    selectedCourseIdForPlayer,
     loadSession,
   } = useAuthStore();
 
@@ -94,6 +98,11 @@ export const App: React.FC = () => {
       <AdminApprovalModal isOpen={isAdminModalOpen} onClose={closeAdminModal} />
       <TraineeProfileModal isOpen={isTraineeModalOpen} onClose={closeTraineeModal} />
       <TrainerStudioModal />
+      <CoursePlayerModal
+        isOpen={isCoursePlayerOpen}
+        onClose={closeCoursePlayer}
+        courseId={selectedCourseIdForPlayer}
+      />
     </div>
   );
 };

@@ -18,6 +18,8 @@ interface AuthState {
   isAdminModalOpen: boolean;
   isTraineeModalOpen: boolean;
   isTrainerModalOpen: boolean;
+  isCoursePlayerOpen: boolean;
+  selectedCourseIdForPlayer: string | null;
 
   // Actions
   openAuthModal: (tab?: 'login' | 'register') => void;
@@ -29,6 +31,8 @@ interface AuthState {
   closeTraineeModal: () => void;
   openTrainerModal: () => void;
   closeTrainerModal: () => void;
+  openCoursePlayer: (courseId: string) => void;
+  closeCoursePlayer: () => void;
   clearError: () => void;
   login: (credentials: UserLoginRequest) => Promise<void>;
   register: (data: UserRegisterRequest) => Promise<UserRegisterResponse>;
@@ -48,6 +52,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAdminModalOpen: false,
   isTraineeModalOpen: false,
   isTrainerModalOpen: false,
+  isCoursePlayerOpen: false,
+  selectedCourseIdForPlayer: null,
 
   openAuthModal: (tab = 'login') => {
     set({ isAuthModalOpen: true, authModalTab: tab, error: null });
@@ -79,6 +85,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   closeTrainerModal: () => {
     set({ isTrainerModalOpen: false });
+  },
+
+  openCoursePlayer: (courseId: string) => {
+    set({ isCoursePlayerOpen: true, selectedCourseIdForPlayer: courseId });
+  },
+
+  closeCoursePlayer: () => {
+    set({ isCoursePlayerOpen: false, selectedCourseIdForPlayer: null });
   },
 
   setAuthModalTab: (tab) => {

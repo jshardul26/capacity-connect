@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 if TYPE_CHECKING:
     from app.models.trainee import Qualification, WorkExperience, Skill, Interest, Certificate
     from app.models.trainer import TrainerExpertise, TrainerLibrary, Course, Assessment
+    from app.models.learning import CourseEnrollment, LessonProgress, CourseFeedback
 
 from app.core.database import Base
 
@@ -111,6 +112,24 @@ class User(Base):
     assessments_created: Mapped[list["Assessment"]] = relationship(
         "Assessment",
         back_populates="creator",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    enrollments: Mapped[list["CourseEnrollment"]] = relationship(
+        "CourseEnrollment",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    lesson_progress: Mapped[list["LessonProgress"]] = relationship(
+        "LessonProgress",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    feedbacks: Mapped[list["CourseFeedback"]] = relationship(
+        "CourseFeedback",
+        back_populates="user",
         cascade="all, delete-orphan",
         lazy="selectin"
     )

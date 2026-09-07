@@ -8,6 +8,7 @@ from app.core.database import Base
 
 if TYPE_CHECKING:
     from app.models.user import User, TrainerProfile
+    from app.models.learning import LearningResource, CourseEnrollment, LessonProgress, CourseFeedback
 
 
 def generate_uuid_str() -> str:
@@ -99,6 +100,24 @@ class Course(Base):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+    learning_resources: Mapped[list["LearningResource"]] = relationship(
+        "LearningResource",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    enrollments: Mapped[list["CourseEnrollment"]] = relationship(
+        "CourseEnrollment",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    feedbacks: Mapped[list["CourseFeedback"]] = relationship(
+        "CourseFeedback",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
 
 class CourseModule(Base):
@@ -142,8 +161,20 @@ class Lesson(Base):
     duration_minutes: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now)
 
-    # Relationship
+    # Relationships
     module: Mapped["CourseModule"] = relationship("CourseModule", back_populates="lessons")
+    learning_resources: Mapped[list["LearningResource"]] = relationship(
+        "LearningResource",
+        back_populates="lesson",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    progress_records: Mapped[list["LessonProgress"]] = relationship(
+        "LessonProgress",
+        back_populates="lesson",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
 
 class Assessment(Base):

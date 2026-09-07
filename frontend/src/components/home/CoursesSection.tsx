@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { Clock, Star, User, Layers, ArrowRight, CheckCircle2, X } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Clock, Star, User, Layers, ArrowRight, CheckCircle2, X, Play } from 'lucide-react';
 import { CourseCardData } from '../../types';
+import { courseService } from '../../services/courseService';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export const CoursesSection: React.FC = () => {
+  const { openCoursePlayer } = useAuthStore();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedCourse, setSelectedCourse] = useState<CourseCardData | null>(null);
+  const [liveCourses, setLiveCourses] = useState<CourseCardData[]>([]);
 
   const categories = [
     'All',
@@ -110,9 +114,50 @@ export const CoursesSection: React.FC = () => {
     },
   ];
 
-  const filteredCourses = activeCategory === 'All'
-    ? courses
-    : courses.filter((c) => c.category === activeCategory);
+  // Fetch live published courses from backend
+  const fetchCourses = useCallback(async () => {
+    try {
+      const items = await courseService.getCourses({
+        category: activeCategory === 'All' ? undefined : activeCategory,
+      });
+      if (items && items.length > 0) {
+        const mapped: CourseCardData[] = items.map((c) => ({
+          id: c.id,
+          code: c.code,
+          title: c.title,
+          category: (c.category as any) || 'Radar Meteorology',
+          level: ((c.level?.charAt(0).toUpperCase() + c.level?.slice(1)) || 'Intermediate') as any,
+          durationHours: Number(c.estimated_hours) || 10,
+          lessonCount: c.lessons_count || 12,
+          instructorName: c.instructor_name,
+          instructorTitle: c.instructor_designation || 'IMD Faculty',
+          rating: c.rating > 0 ? c.rating : 5.0,
+          enrolledCount: c.enrolled_count || 0,
+          imageUrl: c.thumbnail_url || 'https://images.unsplash.com/photo-1590055531615-f16d36ffe8ec?w=600&auto=format&fit=crop&q=80',
+          description: c.description,
+        }));
+        setLiveCourses(mapped);
+      } else {
+        setLiveCourses([]);
+      }
+    } catch {
+      setLiveCourses([]);
+    }
+  }, [activeCategory]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
+
+  const displayCourses = liveCourses.length > 0
+    ? liveCourses
+    : (activeCategory === 'All'
+        ? courses
+        : courses.filter((c) => c.category === activeCategory));
+
+  const handleLaunchPlayer = (courseId: string) => {
+    openCoursePlayer(courseId);
+  };
 
   return (
     <section id="courses" className="py-20 bg-slate-50 border-b border-slate-200/80">
@@ -120,13 +165,15 @@ export const CoursesSection: React.FC = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold uppercase tracking-wider">
-            Curated Curriculum &bull; Sample Catalog Preview
+            {liveCourses.length > 0 ? 'Live LMS Course Catalog' : 'Curated Curriculum &bull; Sample Catalog Preview'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
             Specialized Meteorological Training Courses
           </h2>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Role-oriented sample courses demonstrating planned curriculum packaging. In Phase 5, all active course catalogs, video streams, and offline package manifests will be loaded dynamically from the backend database.
+            {liveCourses.length > 0
+              ? 'Published operational courses with interactive video lectures, slide decks, PDF guides, and progress tracking.'
+              : 'Role-oriented sample courses demonstrating planned curriculum packaging. In Phase 5, all active course catalogs, video streams, and offline package manifests will be loaded dynamically from the backend database.'}
           </p>
         </div>
 
@@ -149,7 +196,7 @@ export const CoursesSection: React.FC = () => {
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {filteredCourses.map((course) => (
+          {displayCourses.map((course) => (
             <div
               key={course.id}
               className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
@@ -218,7 +265,7 @@ export const CoursesSection: React.FC = () => {
 
                     <div className="flex items-center gap-1 text-amber-500 font-bold text-xs">
                       <Star className="w-3.5 h-3.5 fill-current" />
-                      <span className="text-[10px] text-slate-400 font-normal">Sample:</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Rating:</span>
                       <span>{course.rating.toFixed(1)}</span>
                     </div>
                   </div>
@@ -226,13 +273,21 @@ export const CoursesSection: React.FC = () => {
               </div>
 
               {/* Card Footer Action */}
-              <div className="p-5 pt-0">
+              <div className="p-5 pt-0 flex items-center gap-2">
+                <button
+                  onClick={() => handleLaunchPlayer(course.id)}
+                  className="flex-1 py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-teal-600 hover:bg-teal-500 shadow-sm transition-all flex items-center justify-center gap-1.5"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>Start Learning</span>
+                </button>
                 <button
                   onClick={() => setSelectedCourse(course)}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-blue-900 bg-blue-50 hover:bg-blue-900 hover:text-white border border-blue-200 transition-all flex items-center justify-center gap-1.5"
+                  className="py-2.5 px-3 rounded-xl text-xs font-semibold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all flex items-center justify-center gap-1"
+                  title="View Syllabus & Specs"
                 >
-                  <span>View Syllabus &amp; Offline Specs</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Specs</span>
+                  <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
@@ -292,10 +347,21 @@ export const CoursesSection: React.FC = () => {
               >
                 Close
               </button>
+              <button
+                onClick={() => {
+                  const cid = selectedCourse.id;
+                  setSelectedCourse(null);
+                  handleLaunchPlayer(cid);
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-teal-600 hover:bg-teal-500 shadow flex items-center gap-1.5"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Open in Course Player</span>
+              </button>
               <a
                 href="#offline-ecosystem"
                 onClick={() => setSelectedCourse(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-blue-900 hover:bg-blue-950 shadow"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200"
               >
                 Inspect Offline Package
               </a>
