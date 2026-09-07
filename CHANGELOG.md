@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-08
+### Added (Phase 9 — Offline Architecture Complete)
+- SQLite local-node configuration now enables foreign keys, WAL journal mode, and durable local progress and assessment-attempt persistence.
+- Added local content-store structure, checksum-verified authenticated resource delivery, offline-node status, and browser connectivity indication.
+- Added local-only `sync_queue` and content-pack data structures. Progress and completed assessment mutations are durably queued in the same local transaction; delivery, retries, acknowledgements, and remote delta application remain deferred to Phase 10.
+- Added `.ccpack` manifest export, validated local-admin import, and checksum recording as the portable-pack foundation.
+- Added offline architecture tests covering WAL, status, local progress persistence, assessment attempt sealing/queueing, and pack RBAC/import validation.
+
 ## [0.9.0] - 2026-09-08
 ### Added (Phase 8 — Competency & Intelligent Matching Complete)
 - Canonical IMD/MoES competency taxonomy seeded during database initialization, with trainee competency matrices and role-benchmark readiness analysis.

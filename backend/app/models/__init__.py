@@ -31,6 +31,7 @@ from app.models.competency import (
     TraineeCompetency,
     CourseCompetency,
 )
+from app.models.offline import SyncQueue, ContentPack
 
 __all__ = [
     "User",
@@ -62,4 +63,6 @@ __all__ = [
     "Competency",
     "TraineeCompetency",
     "CourseCompetency",
+    "SyncQueue",
+    "ContentPack",
 ]

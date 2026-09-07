@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncEngine
 )
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import text
+from sqlalchemy import event, text
 
 from app.core.config import settings
 
@@ -45,6 +45,15 @@ engine: AsyncEngine = create_async_engine(
     settings.effective_database_url,
     **engine_kwargs
 )
+
+if "sqlite" in settings.effective_database_url:
+    @event.listens_for(engine.sync_engine, "connect")
+    def configure_sqlite(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
 
 async_session_factory = async_sessionmaker(
     bind=engine,

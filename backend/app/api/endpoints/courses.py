@@ -7,6 +7,7 @@ from sqlalchemy import select, func, or_
 from sqlalchemy.orm import selectinload, joinedload
 
 from app.core.database import get_db
+from app.offline.storage import enqueue_local_mutation
 from app.core.dependencies import get_current_user, require_approved_user, require_trainee
 from app.models.user import User, TrainerProfile
 from app.models.trainer import Course, CourseModule, Lesson
@@ -522,6 +523,10 @@ async def update_lesson_progress(
         )
         progress_item.last_accessed_at = get_utc_now()
 
+    await enqueue_local_mutation(db, "progress", "UPDATE", {
+        "user_id": current_user.id, "course_id": course_id, "lesson_id": payload.lesson_id,
+        "watch_time_seconds": progress_item.watch_time_seconds, "is_completed": progress_item.is_completed,
+    })
     await db.commit()
     await db.refresh(progress_item)
 

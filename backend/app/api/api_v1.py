@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements, competency
+from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements, competency, offline
 
 api_router = APIRouter()
 
@@ -30,3 +30,6 @@ api_router.include_router(announcements.router, tags=["Announcements & Notificat
 
 # Phase 8: Competency & Intelligent Matching Router
 api_router.include_router(competency.router, tags=["Competency & Matching"])
+
+# Phase 9: local-node persistence, content-store and pack foundation
+api_router.include_router(offline.router)

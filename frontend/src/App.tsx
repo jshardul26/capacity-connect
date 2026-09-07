@@ -27,6 +27,7 @@ import { HealthResponse } from './types';
 
 export const App: React.FC = () => {
   const [appHealth, setAppHealth] = useState<HealthResponse | null>(null);
+  const [isBrowserOnline, setIsBrowserOnline] = useState(navigator.onLine);
   const {
     isAdminModalOpen,
     closeAdminModal,
@@ -53,8 +54,23 @@ export const App: React.FC = () => {
     loadSession();
   }, [loadSession]);
 
+  useEffect(() => {
+    const updateConnectivity = () => setIsBrowserOnline(navigator.onLine);
+    window.addEventListener('online', updateConnectivity);
+    window.addEventListener('offline', updateConnectivity);
+    return () => {
+      window.removeEventListener('online', updateConnectivity);
+      window.removeEventListener('offline', updateConnectivity);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-amber-400 selection:text-slate-950">
+      {!isBrowserOnline && (
+        <div className="bg-amber-400 px-4 py-2 text-center text-xs font-semibold text-slate-950">
+          Offline mode: locally cached courses, resources, progress, and assessment attempts remain available.
+        </div>
+      )}
       {/* 1. Institutional Top Bar */}
       <TopBar 
         appMode={appHealth?.app_mode || 'local'} 

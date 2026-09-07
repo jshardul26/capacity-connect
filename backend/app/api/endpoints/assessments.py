@@ -14,6 +14,7 @@ from app.models.user import User
 from app.models.trainer import Course, Assessment, Question
 from app.models.assessment import AssessmentAttempt, AssessmentAnswer
 from app.models.competency import TraineeCompetency, CourseCompetency
+from app.offline.storage import enqueue_local_mutation
 from app.schemas.assessment import (
     QuestionOptionItem,
     QuestionCreate,
@@ -710,6 +711,11 @@ async def submit_assessment_answers(
                 )
                 db.add(new_tc)
 
+    await enqueue_local_mutation(db, "attempt", "CREATE", {
+        "attempt_id": attempt.id, "assessment_id": assessment.id, "user_id": current_user.id,
+        "score_obtained": attempt.score_obtained, "is_passed": attempt.is_passed,
+        "attempt_signature": attempt.attempt_signature,
+    })
     await db.commit()
     await db.refresh(attempt)
 
