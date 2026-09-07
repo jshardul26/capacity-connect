@@ -28,6 +28,7 @@ import { HealthResponse } from './types';
 export const App: React.FC = () => {
   const [appHealth, setAppHealth] = useState<HealthResponse | null>(null);
   const [isBrowserOnline, setIsBrowserOnline] = useState(navigator.onLine);
+  const [pendingSyncEvents, setPendingSyncEvents] = useState<number | null>(null);
   const {
     isAdminModalOpen,
     closeAdminModal,
@@ -42,6 +43,8 @@ export const App: React.FC = () => {
     isCompetencyModalOpen,
     closeCompetencyModal,
     loadSession,
+    accessToken,
+    user,
   } = useAuthStore();
 
   useEffect(() => {
@@ -64,11 +67,24 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!accessToken || user?.role !== 'admin') return;
+    fetch('/api/v1/sync/status', { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => setPendingSyncEvents(data?.pending_events ?? null))
+      .catch(() => setPendingSyncEvents(null));
+  }, [accessToken, user?.role, isBrowserOnline]);
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-amber-400 selection:text-slate-950">
       {!isBrowserOnline && (
         <div className="bg-amber-400 px-4 py-2 text-center text-xs font-semibold text-slate-950">
           Offline mode: locally cached courses, resources, progress, and assessment attempts remain available.
+        </div>
+      )}
+      {isBrowserOnline && pendingSyncEvents !== null && pendingSyncEvents > 0 && (
+        <div className="bg-teal-700 px-4 py-2 text-center text-xs font-semibold text-white">
+          {pendingSyncEvents} local change{pendingSyncEvents === 1 ? '' : 's'} awaiting synchronization.
         </div>
       )}
       {/* 1. Institutional Top Bar */}

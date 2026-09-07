@@ -1,5 +1,6 @@
 import json
 import hashlib
+import hmac
 import logging
 from typing import List, Optional, Union
 from datetime import datetime, timezone, timedelta
@@ -9,6 +10,7 @@ from sqlalchemy import select, func, or_, and_
 from sqlalchemy.orm import selectinload, joinedload
 
 from app.core.database import get_db
+from app.core.config import settings
 from app.core.dependencies import get_current_user, require_approved_user, require_trainer
 from app.models.user import User
 from app.models.trainer import Course, Assessment, Question
@@ -663,9 +665,9 @@ async def submit_assessment_answers(
 
     is_passed = total_score >= assessment.passing_score
 
-    # 4. Generate Cryptographic Signature (SHA-256 HMAC digest)
+    # 4. Generate Cryptographic HMAC attempt seal for offline sync reconciliation.
     signature_raw = f"{current_user.id}:{assessment_id}:{total_score}:{now.isoformat()}:capacity_connect_v1"
-    signature = hashlib.sha256(signature_raw.encode("utf-8")).hexdigest()
+    signature = hmac.new(settings.SYNC_HMAC_SECRET.encode("utf-8"), signature_raw.encode("utf-8"), hashlib.sha256).hexdigest()
 
     attempt.end_time = now
     attempt.score_obtained = round(total_score, 2)

@@ -1,0 +1,12 @@
+[Unit]
+Description=Capacity Connect local FastAPI service
+After=network.target
+[Service]
+Type=simple
+WorkingDirectory=/opt/capacity-connect/backend
+Environment=APP_MODE=local
+Environment=LOCAL_CONTENT_STORE_PATH=/var/capacity-connect/content_store
+ExecStart=/opt/capacity-connect/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

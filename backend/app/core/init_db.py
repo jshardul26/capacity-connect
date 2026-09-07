@@ -23,6 +23,19 @@ async def init_db() -> None:
     # Create all tables if they do not already exist
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # SQLite local nodes may already contain the Phase 9 queue. Additive
+        # fields keep those durable events readable after a Phase 10 upgrade.
+        if engine.dialect.name == "sqlite":
+            from sqlalchemy import text
+            columns = (await conn.execute(text("PRAGMA table_info(sync_queue)"))).fetchall()
+            existing = {column[1] for column in columns}
+            for name, definition in (
+                ("client_signature", "TEXT NOT NULL DEFAULT ''"),
+                ("next_attempt_at", "DATETIME"),
+                ("last_error", "TEXT"),
+            ):
+                if name not in existing:
+                    await conn.execute(text(f"ALTER TABLE sync_queue ADD COLUMN {name} {definition}"))
 
     async with async_session_factory() as session:
         # 1. Seed Roles

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements, competency, offline
+from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements, competency, offline, sync
 
 api_router = APIRouter()
 
@@ -33,3 +33,4 @@ api_router.include_router(competency.router, tags=["Competency & Matching"])
 
 # Phase 9: local-node persistence, content-store and pack foundation
 api_router.include_router(offline.router)
+api_router.include_router(sync.router)

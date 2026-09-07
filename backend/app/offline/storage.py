@@ -1,4 +1,5 @@
 import hashlib
+import hmac
 import json
 from pathlib import Path
 from fastapi import HTTPException, status
@@ -30,9 +31,12 @@ async def enqueue_local_mutation(db: AsyncSession, entity_type: str, action: str
     """Record a local mutation transactionally. It is intentionally not transmitted here."""
     if settings.APP_MODE.lower() != "local":
         return
+    canonical_payload = json.dumps(payload, sort_keys=True, default=str)
+    signature = hmac.new(settings.SYNC_HMAC_SECRET.encode(), f"{settings.STATION_CODE}:{entity_type}:{action}:{canonical_payload}".encode(), hashlib.sha256).hexdigest()
     db.add(SyncQueue(
         device_id=settings.STATION_CODE,
         entity_type=entity_type,
         action=action,
-        payload_json=json.dumps(payload, sort_keys=True, default=str),
+        payload_json=canonical_payload,
+        client_signature=signature,
     ))

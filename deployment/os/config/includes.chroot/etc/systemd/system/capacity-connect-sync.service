@@ -1,0 +1,9 @@
+[Unit]
+Description=Capacity Connect queue synchronization worker
+After=capacity-connect.service network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/capacity-connect/backend
+Environment=APP_MODE=local
+ExecStart=/opt/capacity-connect/.venv/bin/python -m app.offline.sync_worker

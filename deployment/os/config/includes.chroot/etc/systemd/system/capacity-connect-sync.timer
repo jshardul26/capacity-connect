@@ -1,0 +1,7 @@
+[Unit]
+Description=Run Capacity Connect sync worker periodically
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+[Install]
+WantedBy=timers.target

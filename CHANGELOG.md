@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-09-08
+### Added (Phases 10–11 — Synchronization Engine & Capacity Connect OS Complete)
+- Added authenticated `/sync/push`, `/sync/pull`, `/sync/status`, and local queue-run APIs with HMAC validation, immutable event-id deduplication, progress maximum conflict resolution, and delta timestamps.
+- Added resilient local queue transport with bounded batches, persisted processing/failure state, and exponential retry scheduling for interrupted sync recovery.
+- Added Phase 10 sync event/state models and upgrade-safe SQLite queue columns; assessment seals now use HMAC-SHA256.
+- Added live frontend pending-sync status indicator for administrators.
+- Added a Debian 12 live-build Capacity Connect OS profile with persistent boot parameter, minimal education desktop packages, local FastAPI and timed sync systemd units, and Chromium app-mode kiosk startup.
+- Added build and persistent-Live-USB usage documentation. LAN services, hotspot configuration, and Phase 12 functionality are intentionally excluded.
 ## [0.10.0] - 2026-09-08
 ### Added (Phase 9 — Offline Architecture Complete)
 - SQLite local-node configuration now enables foreign keys, WAL journal mode, and durable local progress and assessment-attempt persistence.
