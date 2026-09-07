@@ -6,11 +6,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 6: Assessment System (MCQ engine, question bank, timed quiz runner, automated grading)
+- Phase 7: Admin Dashboard (User approvals, role governance, course audits, announcements, metrics)
 
 ---
 
-## [0.6.0] - 2026-09-08
+## [0.7.0] - 2026-09-08
+### Added (Phase 6 — Assessment System Complete)
+- **Assessment Engine Database Models & Relationships (`backend/app/models/assessment.py`):**
+  - Implemented `AssessmentAttempt` model tracking trainee assessment sessions, `start_time`, `end_time`, `score_obtained`, `total_marks`, `passing_score`, `is_passed`, `attempt_status` (`in_progress`, `completed`, `timed_out`), and `attempt_signature` (SHA-256 HMAC cryptographic integrity verification).
+  - Implemented `AssessmentAnswer` model recording question responses, chosen option (`selected_option`), `is_correct`, and `marks_awarded`.
+  - Added cascade relationships and foreign keys linking `User`, `Assessment`, and `Question`.
+- **RESTful Assessment API (`/api/v1/assessments`):**
+  - `GET /api/v1/assessments`: Assessment catalog discovery with availability calculation (`is_available`), deadline status, question counts, and caller's latest attempt status.
+  - `GET /api/v1/assessments/{assessment_id}`: Assessment guidelines, duration, passing score, question count, and past attempts.
+  - `POST /api/v1/assessments`: Assessment authoring and configuration for trainers and admins.
+  - `PUT /api/v1/assessments/{assessment_id}`: Update assessment metadata and availability.
+  - `DELETE /api/v1/assessments/{assessment_id}`: Delete assessment with author/admin RBAC verification.
+  - `POST /api/v1/assessments/{assessment_id}/questions`: Multiple-choice / true-false question bank builder with options JSON.
+  - `DELETE /api/v1/assessments/questions/{question_id}`: Remove question from assessment.
+  - `POST /api/v1/assessments/{assessment_id}/start`: Timed quiz initialization and active session resumption. Implements strict anti-cheat question sanitization (omits correct answers and explanations from response).
+  - `POST /api/v1/assessments/{assessment_id}/submit`: Automated grading engine. Evaluates submitted choices against answer key, computes total score, determines pass/fail status against threshold, generates cryptographic HMAC verification signature, and idempotently locks attempt.
+  - `GET /api/v1/assessments/attempts/me`: Trainee attempt history summary.
+  - `GET /api/v1/assessments/attempts/{attempt_id}`: Detailed question-by-question post-submission breakdown with explanations and awarded marks.
+  - `GET /api/v1/assessments/{assessment_id}/monitoring`: Trainer and admin candidate performance monitoring with pass rate, candidate list, and average score analytics.
+- **Frontend Assessment Center & Timed Examination Desk:**
+  - `types/assessment.ts`: TypeScript contracts matching Pydantic v2 schemas.
+  - `services/assessmentService.ts`: Typed API service client for discovery, timed quiz runner, automated submission, attempt history, and monitoring.
+  - `AssessmentCenterModal.tsx`: Comprehensive modal supporting:
+    - Assessment catalog with subject filters and status indicators (Available, Closed, Passed, Failed).
+    - Examination guidelines, duration, passing targets, and integrity protocols.
+    - Timed Quiz Runner with countdown timer, question palette navigator, and single-choice selection.
+    - Post-submission results banner with pass/fail badge, score percentage, HMAC signature, and question-by-question review with official explanations.
+    - Trainer/admin candidate monitoring dashboard.
+  - Integrated into `App.tsx`, `Navbar.tsx`, and `DashboardPreviewsSection.tsx`.
+- **Automated Testing Suite (`tests/backend/test_assessments.py`):**
+  - Assessment CRUD & publishing tests.
+  - Deadline barrier and availability enforcement tests.
+  - Quiz runner initialization & anti-cheat question sanitization verification tests.
+  - Automated grading, scoring calculation, and passing/failing status verification tests.
+  - Trainee attempt history and post-submission breakdown tests.
+  - Trainer/admin candidate monitoring and isolation tests.
+  - 39/39 backend tests passing across all project phases.
+  - Frontend production build verified: 0 TypeScript errors.
 ### Added (Phase 5 — Learning Management Complete)
 - **LMS Database Models & Relationships (`backend/app/models/learning.py`):**
   - Implemented `LearningResource` model with `resource_type` (video, presentation, study_material), `file_url`, `file_size_bytes`, `sha256_checksum`, and `duration_seconds`.

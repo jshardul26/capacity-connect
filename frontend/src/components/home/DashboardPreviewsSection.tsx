@@ -11,7 +11,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 export const DashboardPreviewsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'trainee' | 'trainer' | 'admin'>('trainee');
-  const { user, openAuthModal, openAdminModal, openTraineeModal, openTrainerModal } = useAuthStore();
+  const { user, openAuthModal, openAdminModal, openTraineeModal, openTrainerModal, openAssessmentModal } = useAuthStore();
 
   return (
     <section id="role-previews" className="py-20 bg-white border-b border-slate-200">
@@ -146,8 +146,17 @@ export const DashboardPreviewsSection: React.FC = () => {
                     10 Multiple Choice Questions &bull; 15 Minutes &bull; Instant Local Grading with HMAC signature.
                   </p>
                   <div className="pt-2">
-                    <button className="w-full py-2 rounded-lg text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 shadow">
-                      Launch Offline Exam
+                    <button
+                      onClick={() => {
+                        if (user) {
+                          openAssessmentModal();
+                        } else {
+                          openAuthModal('login');
+                        }
+                      }}
+                      className="w-full py-2 rounded-lg text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 shadow transition"
+                    >
+                      Launch Examination Desk
                     </button>
                   </div>
                 </div>

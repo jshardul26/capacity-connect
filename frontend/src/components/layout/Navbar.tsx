@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap, BookOpen } from 'lucide-react';
+import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap, BookOpen, Award } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 export const Navbar: React.FC = () => {
@@ -12,6 +12,7 @@ export const Navbar: React.FC = () => {
     openAdminModal,
     openTraineeModal,
     openTrainerModal,
+    openAssessmentModal,
   } = useAuthStore();
 
   const navLinks = [
@@ -98,6 +99,16 @@ export const Navbar: React.FC = () => {
                     <span>Trainer Studio</span>
                   </button>
                 )}
+
+                {/* Assessments Desk Button */}
+                <button
+                  onClick={() => openAssessmentModal()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-950 bg-blue-100 hover:bg-blue-200 border border-blue-300 shadow-sm transition"
+                  title="Open Examination & Assessment Desk"
+                >
+                  <Award className="w-3.5 h-3.5 text-blue-700" />
+                  <span>Assessments</span>
+                </button>
 
                 {/* User Session Pill */}
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs">
@@ -231,6 +242,16 @@ export const Navbar: React.FC = () => {
                     <span>Trainer Studio &amp; Courses</span>
                   </button>
                 )}
+                <button
+                  onClick={() => {
+                    openAssessmentModal();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-950 bg-blue-100 border border-blue-300"
+                >
+                  <Award className="w-4 h-4 text-blue-700" />
+                  <span>Assessment &amp; Examination Desk</span>
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-2">

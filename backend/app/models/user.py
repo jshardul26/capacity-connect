@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from app.models.trainee import Qualification, WorkExperience, Skill, Interest, Certificate
     from app.models.trainer import TrainerExpertise, TrainerLibrary, Course, Assessment
     from app.models.learning import CourseEnrollment, LessonProgress, CourseFeedback
+    from app.models.assessment import AssessmentAttempt
 
 from app.core.database import Base
 
@@ -129,6 +130,12 @@ class User(Base):
     )
     feedbacks: Mapped[list["CourseFeedback"]] = relationship(
         "CourseFeedback",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    assessment_attempts: Mapped[list["AssessmentAttempt"]] = relationship(
+        "AssessmentAttempt",
         back_populates="user",
         cascade="all, delete-orphan",
         lazy="selectin"

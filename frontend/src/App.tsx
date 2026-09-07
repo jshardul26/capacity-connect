@@ -18,6 +18,7 @@ import { AdminApprovalModal } from './components/admin/AdminApprovalModal';
 import { TraineeProfileModal } from './components/trainee/TraineeProfileModal';
 import { TrainerStudioModal } from './components/trainer/TrainerStudioModal';
 import { CoursePlayerModal } from './components/course/CoursePlayerModal';
+import { AssessmentCenterModal } from './components/assessment/AssessmentCenterModal';
 import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
 import { HealthResponse } from './types';
@@ -32,6 +33,9 @@ export const App: React.FC = () => {
     isCoursePlayerOpen,
     closeCoursePlayer,
     selectedCourseIdForPlayer,
+    isAssessmentModalOpen,
+    closeAssessmentModal,
+    selectedAssessmentId,
     loadSession,
   } = useAuthStore();
 
@@ -102,6 +106,11 @@ export const App: React.FC = () => {
         isOpen={isCoursePlayerOpen}
         onClose={closeCoursePlayer}
         courseId={selectedCourseIdForPlayer}
+      />
+      <AssessmentCenterModal
+        isOpen={isAssessmentModalOpen}
+        onClose={closeAssessmentModal}
+        initialAssessmentId={selectedAssessmentId}
       />
     </div>
   );

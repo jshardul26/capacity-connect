@@ -67,4 +67,5 @@ export * from './auth';
 export * from './trainee';
 export * from './trainer';
 export * from './learning';
+export * from './assessment';
 

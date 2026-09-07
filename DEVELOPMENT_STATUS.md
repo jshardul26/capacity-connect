@@ -7,9 +7,9 @@
 ## 1. EXECUTIVE SUMMARY
 - **Problem Statement:** SIH Problem Statement ID 26075 — CAPACITY CONNECT
 - **Theme:** Smart Education | Ministry of Earth Sciences (MoES) / India Meteorological Department (IMD)
-- **Current Milestone:** **Phase 5 Complete — Learning Management**
-- **Project Status:** `PROJECT STATUS: FOUNDATION, UI, AUTHENTICATION, RBAC, TRAINEE, TRAINER & LEARNING MODULES VERIFIED`
-- **Next Planned Milestone:** Phase 6 — Assessment System
+- **Current Milestone:** **Phase 6 Complete — Assessment System**
+- **Project Status:** `PROJECT STATUS: FOUNDATION, UI, AUTHENTICATION, RBAC, TRAINEE, TRAINER, LEARNING & ASSESSMENT MODULES VERIFIED`
+- **Next Planned Milestone:** Phase 7 — Admin Dashboard
 
 ---
 
@@ -23,7 +23,7 @@
 | **Phase 3** | **Trainee Module** | Trainee profile, qualifications, experience, skills, interests, uploaded certificates, personal dashboard. | **COMPLETED** | September 2026 |
 | **Phase 4** | **Trainer Module** | Trainer profile, domain expertise, course creator, trainer library, resource upload, assessment creator. | **COMPLETED** | September 2026 |
 | **Phase 5** | **Learning Management** | Course catalog, modules, lessons, video streaming, presentation viewer, PDF study notes, progress tracking, feedback. | **COMPLETED** | September 2026 |
-| **Phase 6** | **Assessment System** | Subject-wise MCQs, question bank, timed quiz runner, automated grading, result report, attempt history. | PENDING | - |
+| **Phase 6** | **Assessment System** | Subject-wise MCQs, question bank, timed quiz runner, automated grading, result report, attempt history. | **COMPLETED** | September 2026 |
 | **Phase 7** | **Admin Dashboard** | User approvals, role governance, course audits, homepage announcements, notifications, achievements, portal metrics. | PENDING | - |
 | **Phase 8** | **Competency & AI Matching** | Skill-gap calculation, radar charts, scikit-learn course recommendation, explainable trainer-subject matcher. | PENDING | - |
 | **Phase 9** | **Offline Architecture** | SQLite integration (WAL mode), local filesystem content store, offline UI mode, offline assessment execution. | PENDING | - |

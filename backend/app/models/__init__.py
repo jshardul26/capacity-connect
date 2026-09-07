@@ -16,6 +16,10 @@ from app.models.learning import (
     LessonProgress,
     CourseFeedback,
 )
+from app.models.assessment import (
+    AssessmentAttempt,
+    AssessmentAnswer,
+)
 
 __all__ = [
     "User",
@@ -38,4 +42,6 @@ __all__ = [
     "CourseEnrollment",
     "LessonProgress",
     "CourseFeedback",
+    "AssessmentAttempt",
+    "AssessmentAnswer",
 ]

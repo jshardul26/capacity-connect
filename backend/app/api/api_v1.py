@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health, auth, admin, trainee, trainer, courses
+from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments
 
 api_router = APIRouter()
 
@@ -21,4 +21,7 @@ api_router.include_router(trainer.router, prefix="/trainer", tags=["Trainer"])
 
 # Phase 5: Learning Management Router
 api_router.include_router(courses.router, prefix="/courses", tags=["Courses & LMS"])
+
+# Phase 6: Assessment System Router
+api_router.include_router(assessments.router, prefix="/assessments", tags=["Assessments"])
 

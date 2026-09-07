@@ -9,6 +9,7 @@ from app.core.database import Base
 if TYPE_CHECKING:
     from app.models.user import User, TrainerProfile
     from app.models.learning import LearningResource, CourseEnrollment, LessonProgress, CourseFeedback
+    from app.models.assessment import AssessmentAttempt, AssessmentAnswer
 
 
 def generate_uuid_str() -> str:
@@ -220,6 +221,12 @@ class Assessment(Base):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+    attempts: Mapped[list["AssessmentAttempt"]] = relationship(
+        "AssessmentAttempt",
+        back_populates="assessment",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
 
 class Question(Base):
@@ -244,5 +251,11 @@ class Question(Base):
     order_index: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now)
 
-    # Relationship
+    # Relationships
     assessment: Mapped["Assessment"] = relationship("Assessment", back_populates="questions")
+    answers: Mapped[list["AssessmentAnswer"]] = relationship(
+        "AssessmentAnswer",
+        back_populates="question",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )

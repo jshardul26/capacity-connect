@@ -62,6 +62,25 @@ from app.schemas.learning import (
     EnrolledCourseSummary,
 )
 
+from app.schemas.assessment import (
+    QuestionOptionItem,
+    QuestionPublicResponse,
+    QuestionFullResponse,
+    AssessmentCreate,
+    AssessmentUpdate,
+    AssessmentAttemptSummary,
+    AssessmentListItem,
+    AssessmentDetailResponse,
+    AssessmentStartResponse,
+    AnswerSubmissionItem,
+    AssessmentSubmitRequest,
+    AssessmentSubmitResponse,
+    AnswerResultDetail,
+    AssessmentAttemptDetail,
+    AssessmentMonitoringItem,
+    AssessmentMonitoringResponse,
+)
+
 __all__ = [
     "HealthResponse",
     "DatabaseHealthResponse",
@@ -117,4 +136,20 @@ __all__ = [
     "CourseCatalogItem",
     "CourseDetailResponse",
     "EnrolledCourseSummary",
+    "QuestionOptionItem",
+    "QuestionPublicResponse",
+    "QuestionFullResponse",
+    "AssessmentCreate",
+    "AssessmentUpdate",
+    "AssessmentAttemptSummary",
+    "AssessmentListItem",
+    "AssessmentDetailResponse",
+    "AssessmentStartResponse",
+    "AnswerSubmissionItem",
+    "AssessmentSubmitRequest",
+    "AssessmentSubmitResponse",
+    "AnswerResultDetail",
+    "AssessmentAttemptDetail",
+    "AssessmentMonitoringItem",
+    "AssessmentMonitoringResponse",
 ]
