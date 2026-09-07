@@ -10,6 +10,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.1] - 2026-09-08
+### Added (Frontend UI/UX Redesign)
+- **Original Capacity Connect Visual Identity:** Complete editorial and atmospheric overhaul inspired by modern institutional education platforms while maintaining dedicated MoES / IMD focus.
+- **Institutional TopBar & Sticky Navigation:** Added operational weather desk status, station telemetry identifier (`IMD-HQ-DELHI`), engine mode badge, and sticky navbar with mobile drawer navigation.
+- **Atmospheric Hero & Feature Matrix:** Large hero composition with deep atmospheric gradient overlay, dual CTAs, and 4 floating feature cards (`Structured Curriculum`, `Verified Instructors`, `Offline Assessments`, `Competency AI`).
+- **Editorial Observatory Narrative:** Mission showcase highlighting remote weather stations, high-altitude observatories, and radar telemetry operations.
+- **Target Capacity Benchmarks:** Ocean-teal metric band highlighting operational training targets, clearly labeled as prototype preview benchmarks.
+- **Interactive Course Directory:** Subject category filter pills (`Radar Meteorology`, `NWP Modeling`, `Satellite Remote Sensing`, `Surface Instrumentation`, `Disaster Warning`), responsive course cards with metadata, syllabus modal, and enrollment triggers.
+- **5-Stage Capacity Pipeline:** Visual roadmap detailing `Discover → Learn → Practice → Assess → Certify & Grow`.
+- **Competency AI Matrix:** Interactive skill-gap analysis matrix with dynamic role tracks (Radar, NWP, Cyclone) and transparent recommendation rationale preview.
+- **Offline & Edge Ecosystem Showcase:** Visual overview of Capacity Connect OS, Live USB persistence, Micro-LAN mode, and 2-way delta sync.
+- **Dashboard Workspace Previews:** Interactive tabbed switcher for Trainee Workspace, Trainer Studio, and Admin Command Center.
+- **Institutional Footer:** 4-column footer with curriculum links, offline support, SIH 26075 tag, and operational node status.
+- **Live Health Probe:** Integrated live backend probe component verifying `/api/v1/health` and `/api/v1/health/db` connectivity directly from the interface.
+
+---
+
 ## [0.2.0] - 2026-09-08
 ### Added (Phase 1 — Project Foundation Complete)
 - **Docker Compose Setup:** Created `docker-compose.yml` (production: PostgreSQL 16, MinIO, Backend, Frontend, Nginx reverse proxy) and `docker-compose.dev.yml` for local backing services.
