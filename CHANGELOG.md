@@ -6,7 +6,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 7: Admin Dashboard (User approvals, role governance, course audits, announcements, metrics)
+- Phase 8: Competency & AI Matching (Skill-gap calculation, radar charts, scikit-learn recommendation, trainer matcher)
+
+---
+
+## [0.8.0] - 2026-09-08
+### Added (Phase 7 — Admin Module Complete)
+- **Administrative Database Models & Relationships (`backend/app/models/admin.py`):**
+  - Implemented `Announcement` model supporting institutional announcements, rich text content, author linkage, active state flag, and priority homepage broadcasting (`is_featured_on_homepage`).
+  - Implemented `Notification` model enabling targeted user notifications and system-wide broadcast alerts with read tracking (`is_read`, `read_at`).
+  - Implemented `Achievement` model for conferring official competency distinction badges, citations, and homepage spotlight showcase (`is_displayed_on_homepage`).
+  - Implemented `AuditLog` model recording immutable audit trails for administrative decisions (target entity, action, previous/new state, actor user ID, client IP address).
+  - Connected bi-directional relationships with `User` and exported via `backend/app/models/__init__.py`.
+- **Administrative & Public Endpoints (`/api/v1/admin` & `/api/v1/announcements`):**
+  - `GET /api/v1/admin/dashboard`: Platform-wide analytics aggregation (total users, trainees, trainers, admins, courses, enrollments, assessments, pass rates, certificates, stations).
+  - `GET /api/v1/admin/users`: Searchable and filterable officer directory with role and status filtering.
+  - `GET /api/v1/admin/users/pending`: Pending verification queue for onboarding officers.
+  - `POST /api/v1/admin/users/{user_id}/approve`: Approves user clearance, auto-provisions profile, writes audit log.
+  - `POST /api/v1/admin/users/{user_id}/reject`: Rejects unverified candidate registration with audit trail.
+  - `PUT /api/v1/admin/users/{user_id}/role`: Elevates or changes user role (`trainee`, `trainer`, `admin`) and creates persona profiles.
+  - `PUT /api/v1/admin/users/{user_id}/status`: Administrative status override (`approved`, `suspended`, `pending_approval`, `rejected`).
+  - `GET /api/v1/admin/courses`: Audits all courses with module count, enrollments, and ratings.
+  - `PUT /api/v1/admin/courses/{course_id}/publish`: Administrative toggle override for course publishing.
+  - `GET /api/v1/admin/enrollments`: Cross-system candidate course enrollments monitoring.
+  - `GET /api/v1/admin/assessments`: Aggregated assessment attempts and pass rate tracking.
+  - `GET /api/v1/admin/certifications`: Issued certificates registry.
+  - `GET /api/v1/admin/announcements` & `POST/PUT/DELETE /api/v1/admin/announcements/{id}`: Full administrative announcement lifecycle management.
+  - `POST /api/v1/admin/notifications`: Dispatches targeted officer alerts or system-wide broadcast directives.
+  - `GET /api/v1/admin/achievements` & `POST/DELETE /api/v1/admin/achievements`: Grant and revoke competency distinction badges.
+  - `GET /api/v1/admin/audit-logs`: Immutable queryable log of all administrative actions.
+  - `GET /api/v1/announcements`: Public active bulletins feed with homepage priority sorting.
+  - `GET /api/v1/notifications/me` & `POST /api/v1/notifications/{id}/read` & `/read-all`: User notification center.
+  - `GET /api/v1/achievements/homepage` & `/me`: Competency badges showcase.
+- **Frontend Admin Command Console & Homepage Integration:**
+  - `types/admin.ts`: TypeScript interfaces matching Pydantic v2 schemas.
+  - `services/adminService.ts`: Typed API client for admin endpoints, announcements, notifications, and achievements.
+  - `AdminApprovalModal.tsx`: Comprehensive 8-tab Admin Command Console (`overview`, `clearances`, `users`, `curriculum`, `announcements`, `notifications`, `achievements`, `audit`).
+  - `AnnouncementsSection.tsx`: Homepage institutional directives and bulletins section.
+  - `DashboardPreviewsSection.tsx`: Replaced static demo preview metrics with real live API data from `/api/v1/admin/dashboard`.
+  - Integrated into `App.tsx` and authenticated navigation.
+- **Automated Testing & Production Build:**
+  - `tests/backend/test_admin.py`: 8 comprehensive tests validating metrics, approval/rejection workflows, role/status governance, RBAC 403 enforcement, course auditing, announcements, notifications, achievements, and audit logs.
+  - 47/47 backend tests passing across all project phases.
+  - Frontend production build verified: 0 TypeScript errors.
 
 ---
 

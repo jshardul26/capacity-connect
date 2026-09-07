@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments
+from app.api.endpoints import health, auth, admin, trainee, trainer, courses, assessments, announcements
 
 api_router = APIRouter()
 
@@ -10,7 +10,7 @@ api_router.include_router(health.router, tags=["Health"])
 # Phase 2: Authentication & RBAC Router
 api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 
-# Phase 2: Admin Approval Workflow Foundation Router
+# Phase 7: Admin Module Router
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 # Phase 3: Trainee Module Router
@@ -24,4 +24,7 @@ api_router.include_router(courses.router, prefix="/courses", tags=["Courses & LM
 
 # Phase 6: Assessment System Router
 api_router.include_router(assessments.router, prefix="/assessments", tags=["Assessments"])
+
+# Phase 7: Announcements, Notifications & Achievements Public/User Router
+api_router.include_router(announcements.router, tags=["Announcements & Notifications"])
 

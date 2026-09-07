@@ -10,6 +10,7 @@ import { LearningJourneySection } from './components/home/LearningJourneySection
 import { CompetencyAISection } from './components/home/CompetencyAISection';
 import { OfflineEcosystemSection } from './components/home/OfflineEcosystemSection';
 import { DashboardPreviewsSection } from './components/home/DashboardPreviewsSection';
+import { AnnouncementsSection } from './components/home/AnnouncementsSection';
 import { CTASection } from './components/home/CTASection';
 import { HealthCheck } from './components/common/HealthCheck';
 import { Footer } from './components/layout/Footer';
@@ -63,6 +64,9 @@ export const App: React.FC = () => {
 
       {/* 3. Hero Section with Atmosphere Gradient & Dual CTAs */}
       <HeroSection />
+
+      {/* 3.5 Institutional Announcements Bulletin Feed (Phase 7) */}
+      <AnnouncementsSection />
 
       {/* 4. Overlapping 4 Numbered Feature Cards (01 to 04) */}
       <FeatureCards />

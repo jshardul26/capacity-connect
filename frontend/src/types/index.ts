@@ -68,4 +68,5 @@ export * from './trainee';
 export * from './trainer';
 export * from './learning';
 export * from './assessment';
+export * from './admin';
 

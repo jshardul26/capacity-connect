@@ -81,6 +81,25 @@ from app.schemas.assessment import (
     AssessmentMonitoringResponse,
 )
 
+from app.schemas.admin import (
+    AdminDashboardMetrics,
+    UserRoleUpdateRequest,
+    UserStatusUpdateRequest,
+    UserListItem,
+    AdminCourseItem,
+    AdminEnrollmentItem,
+    AdminAssessmentItem,
+    AdminCertificateItem,
+    AnnouncementCreate,
+    AnnouncementUpdate,
+    AnnouncementResponse,
+    NotificationCreate,
+    NotificationResponse,
+    AchievementCreate,
+    AchievementResponse,
+    AuditLogResponse,
+)
+
 __all__ = [
     "HealthResponse",
     "DatabaseHealthResponse",
@@ -152,4 +171,20 @@ __all__ = [
     "AssessmentAttemptDetail",
     "AssessmentMonitoringItem",
     "AssessmentMonitoringResponse",
+    "AdminDashboardMetrics",
+    "UserRoleUpdateRequest",
+    "UserStatusUpdateRequest",
+    "UserListItem",
+    "AdminCourseItem",
+    "AdminEnrollmentItem",
+    "AdminAssessmentItem",
+    "AdminCertificateItem",
+    "AnnouncementCreate",
+    "AnnouncementUpdate",
+    "AnnouncementResponse",
+    "NotificationCreate",
+    "NotificationResponse",
+    "AchievementCreate",
+    "AchievementResponse",
+    "AuditLogResponse",
 ]

@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from app.models.trainer import TrainerExpertise, TrainerLibrary, Course, Assessment
     from app.models.learning import CourseEnrollment, LessonProgress, CourseFeedback
     from app.models.assessment import AssessmentAttempt
+    from app.models.admin import Announcement, Notification, Achievement, AuditLog
 
 from app.core.database import Base
 
@@ -137,6 +138,30 @@ class User(Base):
     assessment_attempts: Mapped[list["AssessmentAttempt"]] = relationship(
         "AssessmentAttempt",
         back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    announcements: Mapped[list["Announcement"]] = relationship(
+        "Announcement",
+        back_populates="author",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    notifications: Mapped[list["Notification"]] = relationship(
+        "Notification",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    achievements: Mapped[list["Achievement"]] = relationship(
+        "Achievement",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    admin_audit_logs: Mapped[list["AuditLog"]] = relationship(
+        "AuditLog",
+        back_populates="admin_user",
         cascade="all, delete-orphan",
         lazy="selectin"
     )

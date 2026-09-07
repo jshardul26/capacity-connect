@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   GraduationCap, 
   BookOpen, 
@@ -8,10 +8,21 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
+import { adminService } from '../../services/adminService';
+import { AdminDashboardMetrics } from '../../types';
 
 export const DashboardPreviewsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'trainee' | 'trainer' | 'admin'>('trainee');
-  const { user, openAuthModal, openAdminModal, openTraineeModal, openTrainerModal, openAssessmentModal } = useAuthStore();
+  const { user, accessToken, openAuthModal, openAdminModal, openTraineeModal, openTrainerModal, openAssessmentModal } = useAuthStore();
+  const [adminMetrics, setAdminMetrics] = useState<AdminDashboardMetrics | null>(null);
+
+  useEffect(() => {
+    if (user?.role === 'admin' && accessToken) {
+      adminService.getDashboardMetrics(accessToken)
+        .then(setAdminMetrics)
+        .catch(() => setAdminMetrics(null));
+    }
+  }, [user, accessToken]);
 
   return (
     <section id="role-previews" className="py-20 bg-white border-b border-slate-200">
@@ -258,35 +269,51 @@ export const DashboardPreviewsSection: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="text-slate-400 text-[11px] font-mono">AUTHENTICATION ENGINE</div>
-                  <div className="text-xl font-bold font-mono text-emerald-400 mt-1">RBAC v1.0</div>
-                  <div className="text-[10px] text-slate-400">JWT + Bcrypt (Active)</div>
+                  <div className="text-slate-400 text-[11px] font-mono">REGISTERED OFFICERS</div>
+                  <div className="text-2xl font-black font-mono text-emerald-400 mt-1">
+                    {adminMetrics ? adminMetrics.total_users : user?.role === 'admin' ? '...' : 'Live Engine'}
+                  </div>
+                  <div className="text-[10px] text-slate-400">
+                    {adminMetrics
+                      ? `${adminMetrics.trainees_count} Trainees &bull; ${adminMetrics.trainers_count} Trainers`
+                      : 'RBAC v1.0 Active'}
+                  </div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="text-slate-400 text-[11px] font-mono">STATION OS NODES</div>
-                  <div className="text-2xl font-black font-mono text-teal-300 mt-1">—</div>
-                  <div className="text-[10px] text-slate-400">Available after edge deployment</div>
+                  <div className="text-slate-400 text-[11px] font-mono">TOTAL ENROLLMENTS</div>
+                  <div className="text-2xl font-black font-mono text-teal-300 mt-1">
+                    {adminMetrics ? adminMetrics.total_enrollments : user?.role === 'admin' ? '...' : '0'}
+                  </div>
+                  <div className="text-[10px] text-slate-400">
+                    {adminMetrics ? `${adminMetrics.completed_enrollments_count} Completed courses` : 'Curriculum Delivery'}
+                  </div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="text-slate-400 text-[11px] font-mono">COMPLETED ASSESSMENTS</div>
-                  <div className="text-2xl font-black font-mono text-amber-300 mt-1">—</div>
-                  <div className="text-[10px] text-slate-400">Populates on sync (Phase 6/10)</div>
+                  <div className="text-2xl font-black font-mono text-amber-300 mt-1">
+                    {adminMetrics ? adminMetrics.total_assessment_attempts : user?.role === 'admin' ? '...' : '0'}
+                  </div>
+                  <div className="text-[10px] text-slate-400">
+                    {adminMetrics ? `Pass Rate: ${adminMetrics.overall_pass_rate_percentage}%` : 'Evaluation Engine'}
+                  </div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="text-slate-400 text-[11px] font-mono">PENDING CLEARANCE QUEUE</div>
-                  <div className="text-xl font-black font-mono text-amber-400 mt-1">
-                    {user?.role === 'admin' ? 'Live Queue Available' : 'Requires Admin Auth'}
+                  <div className="text-slate-400 text-[11px] font-mono">PENDING CLEARANCES</div>
+                  <div className="text-2xl font-black font-mono text-amber-400 mt-1">
+                    {adminMetrics ? adminMetrics.pending_approvals_count : user?.role === 'admin' ? '...' : 'Requires Auth'}
                   </div>
-                  <div className="text-[10px] text-slate-400">Click Review to inspect</div>
+                  <div className="text-[10px] text-slate-400">
+                    {adminMetrics ? 'Awaiting administrative action' : 'Click Review to inspect'}
+                  </div>
                 </div>
               </div>
 
               <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs text-slate-300">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span>Governance Controls: User role elevation, identity clearance, and sync audit logging.</span>
+                  <span>Institutional Governance: User role elevation, identity clearance, course auditing &amp; bulletins.</span>
                 </div>
-                <span className="font-mono text-amber-300">Phase 2 Implemented</span>
+                <span className="font-mono text-amber-300">Phase 7 Complete</span>
               </div>
             </div>
           )}

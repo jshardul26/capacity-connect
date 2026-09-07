@@ -20,6 +20,12 @@ from app.models.assessment import (
     AssessmentAttempt,
     AssessmentAnswer,
 )
+from app.models.admin import (
+    Announcement,
+    Notification,
+    Achievement,
+    AuditLog,
+)
 
 __all__ = [
     "User",
@@ -44,4 +50,8 @@ __all__ = [
     "CourseFeedback",
     "AssessmentAttempt",
     "AssessmentAnswer",
+    "Announcement",
+    "Notification",
+    "Achievement",
+    "AuditLog",
 ]
