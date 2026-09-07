@@ -4,9 +4,14 @@ import { BrainCircuit, Sparkles, CheckCircle, ArrowRight } from 'lucide-react';
 export const CompetencyAISection: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<'radar' | 'nwp' | 'cyclone'>('radar');
 
+  // Conceptual prototype data demonstrating Phase 8 explainable vector similarity mapping
+  // Future Dynamic Endpoints (Phase 8 Competency & AI Matching):
+  // - GET /api/v1/competency/trainee/{user_id}/matrix
+  // - GET /api/v1/competency/gaps?target_role={role}
+  // - GET /api/v1/competency/recommendations/courses
   const roleProfiles = {
     radar: {
-      roleTitle: 'Senior Doppler Weather Radar Specialist',
+      roleTitle: 'Senior Doppler Weather Radar Specialist (Sample Track)',
       readinessScore: 71,
       competencies: [
         { name: 'Doppler Radar Operation (DWR)', current: 55, required: 85, gap: 30, recommended: 'MET-401: Advanced DWR & QPE' },
@@ -15,10 +20,10 @@ export const CompetencyAISection: React.FC = () => {
         { name: 'AWS Surface Maintenance', current: 85, required: 65, gap: 0, recommended: 'Proficiency Exceeded' },
       ],
       topRecommendation: 'MET-401: Advanced Doppler Weather Radar & QPE',
-      rationale: 'Addresses primary 30% deficit in Doppler pulse compression and velocity dealiasing algorithms.',
+      rationale: 'Simulated Rationale: Addresses primary 30% deficit in Doppler pulse compression and velocity dealiasing algorithms.',
     },
     nwp: {
-      roleTitle: 'Regional High-Resolution Forecaster',
+      roleTitle: 'Regional High-Resolution Forecaster (Sample Track)',
       readinessScore: 64,
       competencies: [
         { name: 'Numerical Weather Prediction (WRF)', current: 45, required: 90, gap: 45, recommended: 'NWP-502: Operational WRF Modeling' },
@@ -27,10 +32,10 @@ export const CompetencyAISection: React.FC = () => {
         { name: 'Atmospheric Physics & Soundings', current: 75, required: 85, gap: 10, recommended: 'MET-302: Upper-Air Soundings' },
       ],
       topRecommendation: 'NWP-502: Operational WRF Modeling & Data Assimilation',
-      rationale: 'Directly resolves 45% gap in grid nesting, convective parameterization, and boundary condition tuning.',
+      rationale: 'Simulated Rationale: Directly resolves 45% gap in grid nesting, convective parameterization, and boundary condition tuning.',
     },
     cyclone: {
-      roleTitle: 'Tropical Cyclone Early Warning Officer',
+      roleTitle: 'Tropical Cyclone Early Warning Officer (Sample Track)',
       readinessScore: 82,
       competencies: [
         { name: 'Tropical Cyclone Tracking (Dvorak)', current: 65, required: 90, gap: 25, recommended: 'CYC-601: Cyclone Tracking & Warnings' },
@@ -39,7 +44,7 @@ export const CompetencyAISection: React.FC = () => {
         { name: 'Hydrodynamic Storm Surge Modeling', current: 50, required: 80, gap: 30, recommended: 'CYC-601: Storm Surge Calculations' },
       ],
       topRecommendation: 'CYC-601: Tropical Cyclone Tracking, Dvorak & Storm Surge',
-      rationale: 'Targets the critical 30% gap in storm surge surge-height prediction and evacuation contour calculation.',
+      rationale: 'Simulated Rationale: Targets the critical 30% gap in storm surge surge-height prediction and evacuation contour calculation.',
     },
   };
 
@@ -55,13 +60,13 @@ export const CompetencyAISection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-400/30 text-purple-300 text-xs font-semibold tracking-wide">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Explainable Competency Intelligence</span>
+            <span>Explainable Competency Intelligence &bull; Interactive Model Preview</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Automated Skill-Gap Mapping &amp; Training Matching
           </h2>
           <p className="text-sm text-slate-300 leading-relaxed">
-            Capacity Connect maps verified trainee skills against official MoES job-role benchmarks, calculating deterministic gaps to recommend optimal learning pathways.
+            Conceptual demonstration of the Phase 8 vector-matching architecture. The simulated benchmarks below demonstrate how trainee skill vectors will be evaluated against target MoES role benchmarks to determine learning pathways without generative hallucination.
           </p>
         </div>
 
@@ -74,7 +79,7 @@ export const CompetencyAISection: React.FC = () => {
                 selectedRole === 'radar' ? 'bg-amber-500 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
               }`}
             >
-              Radar Meteorologist Track
+              Radar Meteorologist (Sample)
             </button>
             <button
               onClick={() => setSelectedRole('nwp')}
@@ -82,7 +87,7 @@ export const CompetencyAISection: React.FC = () => {
                 selectedRole === 'nwp' ? 'bg-amber-500 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
               }`}
             >
-              NWP Forecaster Track
+              NWP Forecaster (Sample)
             </button>
             <button
               onClick={() => setSelectedRole('cyclone')}
@@ -90,7 +95,7 @@ export const CompetencyAISection: React.FC = () => {
                 selectedRole === 'cyclone' ? 'bg-amber-500 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
               }`}
             >
-              Cyclone Warning Track
+              Cyclone Warning (Sample)
             </button>
           </div>
         </div>
@@ -101,13 +106,13 @@ export const CompetencyAISection: React.FC = () => {
           <div className="lg:col-span-7 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
               <div>
-                <span className="text-xs text-slate-400 font-mono">TARGET BENCHMARK ROLE:</span>
+                <span className="text-xs text-slate-400 font-mono">SIMULATED BENCHMARK ROLE:</span>
                 <h3 className="text-xl font-bold text-white mt-0.5">{active.roleTitle}</h3>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-400">Readiness:</span>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                  {active.readinessScore}% Match
+                  {active.readinessScore}% Match (Sample)
                 </span>
               </div>
             </div>
@@ -163,13 +168,13 @@ export const CompetencyAISection: React.FC = () => {
                 <BrainCircuit className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">AI Recommendation Engine</h4>
-                <p className="text-[11px] text-slate-400">Vector Cosine Similarity &bull; Scikit-Learn</p>
+                <h4 className="text-sm font-bold text-white">AI Recommendation Engine (Prototype Model)</h4>
+                <p className="text-[11px] text-slate-400">Deterministic Vector Cosine Similarity &bull; Scikit-Learn</p>
               </div>
             </div>
 
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs">
-              <div className="text-[10px] font-mono text-teal-400 uppercase tracking-wider">Top Priority Match:</div>
+              <div className="text-[10px] font-mono text-teal-400 uppercase tracking-wider">Simulated Priority Match:</div>
               <div className="text-sm font-bold text-white">{active.topRecommendation}</div>
               <p className="text-slate-300 leading-relaxed text-[11px]">{active.rationale}</p>
             </div>

@@ -30,6 +30,10 @@ export interface SystemHealthReport {
   database: DatabaseHealthResponse;
 }
 
+/**
+ * CourseCardData: UI structure for course catalog cards.
+ * In Phase 5 (Learning Management), this will be populated dynamically from GET /api/v1/courses.
+ */
 export interface CourseCardData {
   id: string;
   code: string;
@@ -46,6 +50,10 @@ export interface CourseCardData {
   description: string;
 }
 
+/**
+ * CompetencyItem: UI structure for skill-gap radar vectors and matrices.
+ * In Phase 8 (Competency & AI Matching), this will be populated from GET /api/v1/competency/trainee/{user_id}/matrix.
+ */
 export interface CompetencyItem {
   id: string;
   name: string;

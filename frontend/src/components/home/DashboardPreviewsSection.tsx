@@ -77,16 +77,16 @@ export const DashboardPreviewsSection: React.FC = () => {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
-                  <div className="text-xs text-teal-400 font-mono">TRAINEE WORKSPACE &bull; SAMPLE PREVIEW</div>
-                  <h3 className="text-xl font-bold text-white mt-0.5">Welcome back, Scientist S. Sharma</h3>
-                  <p className="text-xs text-slate-400">Designation: Meteorologist Gr-II &bull; Station: DWR Kochi Station</p>
+                  <div className="text-xs text-teal-400 font-mono">TRAINEE WORKSPACE &bull; DEMO WORKSPACE PREVIEW</div>
+                  <h3 className="text-xl font-bold text-white mt-0.5">[Demo Workspace] Scientist S. Sharma</h3>
+                  <p className="text-xs text-slate-400">Designation: Meteorologist Gr-II (Demo) &bull; Station: DWR Kochi Station (Sample Context)</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 rounded-full text-xs font-mono bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                    2 Active Courses
+                    2 Active Courses (Demo)
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    Competency: 74%
+                    Competency: 74% (Sample)
                   </span>
                 </div>
               </div>
@@ -96,9 +96,9 @@ export const DashboardPreviewsSection: React.FC = () => {
                 <div className="lg:col-span-2 p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500 text-slate-950">
-                      CONTINUE LEARNING
+                      CONTINUE LEARNING (SAMPLE)
                     </span>
-                    <span className="text-xs text-teal-400 font-mono">68% Complete</span>
+                    <span className="text-xs text-teal-400 font-mono">68% Complete (Demo)</span>
                   </div>
 
                   <div>
@@ -122,7 +122,7 @@ export const DashboardPreviewsSection: React.FC = () => {
                 <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
                   <div className="flex items-center gap-2 text-amber-400 text-xs font-bold font-mono">
                     <Clock className="w-4 h-4" />
-                    <span>TIMED ASSESSMENT</span>
+                    <span>TIMED ASSESSMENT (SAMPLE)</span>
                   </div>
                   <h4 className="text-sm font-bold text-white">DWR Certification Quiz</h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
@@ -143,9 +143,9 @@ export const DashboardPreviewsSection: React.FC = () => {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
-                  <div className="text-xs text-amber-400 font-mono">TRAINER STUDIO &bull; SAMPLE PREVIEW</div>
-                  <h3 className="text-xl font-bold text-white mt-0.5">Dr. Rajesh Singh &bull; Lead Instructor</h3>
-                  <p className="text-xs text-slate-400">Division: Radar Meteorology &bull; 14.5 Years Meteorological Experience</p>
+                  <div className="text-xs text-amber-400 font-mono">TRAINER STUDIO &bull; DEMO WORKSPACE PREVIEW</div>
+                  <h3 className="text-xl font-bold text-white mt-0.5">[Demo Workspace] Dr. Rajesh Singh &bull; Lead Instructor</h3>
+                  <p className="text-xs text-slate-400">Division: Radar Meteorology &bull; 14.5 Years Domain Experience (Sample Profile)</p>
                 </div>
                 <button className="px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow">
                   + Create New Course
@@ -155,20 +155,20 @@ export const DashboardPreviewsSection: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
                   <div className="text-slate-400 text-xs font-mono">COURSES AUTHORED</div>
-                  <div className="text-2xl font-black font-mono text-white">4 Courses</div>
-                  <div className="text-[11px] text-teal-400">MET-401, DWR-302, RAD-201, QPE-501</div>
+                  <div className="text-2xl font-black font-mono text-white">—</div>
+                  <div className="text-[11px] text-teal-400">Populates in Phase 4 Studio</div>
                 </div>
 
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
                   <div className="text-slate-400 text-xs font-mono">ENROLLED TRAINEES</div>
-                  <div className="text-2xl font-black font-mono text-white">240 Observers</div>
-                  <div className="text-[11px] text-emerald-400">Average Quiz Score: 84.6%</div>
+                  <div className="text-2xl font-black font-mono text-white">—</div>
+                  <div className="text-[11px] text-emerald-400">Live platform data pending</div>
                 </div>
 
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
                   <div className="text-slate-400 text-xs font-mono">TRAINER LIBRARY</div>
-                  <div className="text-2xl font-black font-mono text-white">36 Files</div>
-                  <div className="text-[11px] text-purple-400">Videos, Slide Decks, Lab Manuals</div>
+                  <div className="text-2xl font-black font-mono text-white">—</div>
+                  <div className="text-[11px] text-purple-400">Populates in Phase 4 Library</div>
                 </div>
               </div>
 
@@ -187,16 +187,16 @@ export const DashboardPreviewsSection: React.FC = () => {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
-                  <div className="text-xs text-purple-400 font-mono">ADMIN COMMAND &bull; SAMPLE PREVIEW</div>
+                  <div className="text-xs text-purple-400 font-mono">ADMIN COMMAND &bull; DEMO WORKSPACE PREVIEW</div>
                   <h3 className="text-xl font-bold text-white mt-0.5">Central Portal Administration Console</h3>
-                  <p className="text-xs text-slate-400">Ministry of Earth Sciences &bull; India Meteorological Department</p>
+                  <p className="text-xs text-slate-400">Ministry of Earth Sciences &bull; India Meteorological Department (Prototype)</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="px-3 py-1 rounded-full text-xs font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    3 Pending Approvals
+                    Sample: 3 Approvals
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    All Nodes Synced
+                    Local Node Active
                   </span>
                 </div>
               </div>
@@ -204,18 +204,18 @@ export const DashboardPreviewsSection: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="text-slate-400 text-[11px] font-mono">REGISTERED USERS</div>
-                  <div className="text-2xl font-black font-mono text-white mt-1">1,240</div>
-                  <div className="text-[10px] text-slate-400">Across 32 State Met Centres</div>
+                  <div className="text-2xl font-black font-mono text-white mt-1">—</div>
+                  <div className="text-[10px] text-slate-400">Live data pending (Phase 2)</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="text-slate-400 text-[11px] font-mono">STATION OS NODES</div>
-                  <div className="text-2xl font-black font-mono text-teal-300 mt-1">38 Active</div>
-                  <div className="text-[10px] text-slate-400">Leh, Kochi, Minicoy, Agartala</div>
+                  <div className="text-2xl font-black font-mono text-teal-300 mt-1">—</div>
+                  <div className="text-[10px] text-slate-400">Available after edge deployment</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="text-slate-400 text-[11px] font-mono">COMPLETED ASSESSMENTS</div>
-                  <div className="text-2xl font-black font-mono text-amber-300 mt-1">3,410</div>
-                  <div className="text-[10px] text-slate-400">100% Cryptographically Verified</div>
+                  <div className="text-2xl font-black font-mono text-amber-300 mt-1">—</div>
+                  <div className="text-[10px] text-slate-400">Populates on sync (Phase 6/10)</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="text-slate-400 text-[11px] font-mono">PENDING SYNC QUEUE</div>

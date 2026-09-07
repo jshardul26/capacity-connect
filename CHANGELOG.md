@@ -10,6 +10,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.2] - 2026-09-08
+### Changed (Frontend Data & Content Audit)
+- **Elimination of Unsupported Claims:** Removed arbitrary quantitative platform metrics (`500+ field observatories`, `50+ courses`, `1,200+ trainees`, `150+ trainers`) and aligned copy with canonical blueprint phrasing.
+- **Dynamic Pending UI States (`—`):** Converted unsupported platform counters in `StatsSection` and `DashboardPreviewsSection` to clean pending states (`—`) with labels indicating future phase backend integration.
+- **Explicit Demo/Preview Tagging:** Added unambiguous prototype labels to `CoursesSection` (`Sample Catalog Preview`, `Sample: 4.9★`), `CompetencyAISection` (`Interactive Model Preview`, `Simulated Benchmark Role`), and persona dashboards (`[Demo Workspace Preview]`).
+- **Comprehensive Audit Report:** Published `docs/DATA_CONTENT_AUDIT.md` classifying 34 user-visible elements into 5 canonical categories and mapping future REST API endpoints.
+
+---
+
 ## [0.2.1] - 2026-09-08
 ### Added (Frontend UI/UX Redesign)
 - **Original Capacity Connect Visual Identity:** Complete editorial and atmospheric overhaul inspired by modern institutional education platforms while maintaining dedicated MoES / IMD focus.

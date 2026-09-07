@@ -34,7 +34,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Narrative Subtitle */}
           <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl">
-            A mission-critical, offline-first digital learning management ecosystem engineered for meteorological observers, forecasters, and radar specialists across 500+ field observatories and frontier stations.
+            A mission-critical, offline-first digital learning management ecosystem engineered for meteorological observers, forecasters, and radar specialists across remote field observatories, coastal radar stations, and frontier monitoring posts.
           </p>
 
           {/* Primary and Secondary CTA Buttons */}

@@ -19,7 +19,7 @@ export const AboutSection: React.FC = () => {
                 <div className="relative z-10">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs font-mono">
                     <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                    <span>DWR Network &bull; 24/7 Observation</span>
+                    <span>Meteorological Networks &bull; Edge Deployment</span>
                   </div>
                 </div>
 
