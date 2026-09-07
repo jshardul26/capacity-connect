@@ -11,7 +11,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 export const DashboardPreviewsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'trainee' | 'trainer' | 'admin'>('trainee');
-  const { user, openAuthModal, openAdminModal } = useAuthStore();
+  const { user, openAuthModal, openAdminModal, openTraineeModal } = useAuthStore();
 
   return (
     <section id="role-previews" className="py-20 bg-white border-b border-slate-200">
@@ -79,17 +79,32 @@ export const DashboardPreviewsSection: React.FC = () => {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
-                  <div className="text-xs text-teal-400 font-mono">TRAINEE WORKSPACE &bull; DEMO WORKSPACE PREVIEW</div>
-                  <h3 className="text-xl font-bold text-white mt-0.5">[Demo Workspace] Scientist S. Sharma</h3>
-                  <p className="text-xs text-slate-400">Designation: Meteorologist Gr-II (Demo) &bull; Station: DWR Kochi Station (Sample Context)</p>
+                  <div className="text-xs text-teal-400 font-mono">TRAINEE WORKSPACE &bull; {user?.role === 'trainee' ? 'AUTHENTICATED OFFICER SESSION' : 'DEMO WORKSPACE PREVIEW'}</div>
+                  <h3 className="text-xl font-bold text-white mt-0.5">
+                    {user?.role === 'trainee' ? user.full_name : '[Demo Workspace] Scientist S. Sharma'}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Station: {user?.station_code || 'DWR Kochi Station (Sample Context)'} &bull; Org: {user?.organization || 'India Meteorological Department (IMD)'}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-mono bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                    2 Active Courses (Demo)
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    Competency: 74% (Sample)
-                  </span>
+                  {user?.role === 'trainee' ? (
+                    <button
+                      onClick={openTraineeModal}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-teal-400 hover:bg-teal-300 shadow flex items-center gap-2 transition"
+                    >
+                      <GraduationCap className="w-4 h-4" />
+                      <span>Manage My Profile &amp; Qualifications</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => openAuthModal('login')}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-800 hover:bg-blue-700 shadow flex items-center gap-2 transition"
+                    >
+                      <GraduationCap className="w-4 h-4" />
+                      <span>Sign In as Trainee</span>
+                    </button>
+                  )}
                 </div>
               </div>
 

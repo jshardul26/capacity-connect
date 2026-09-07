@@ -6,7 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 3: Trainee Module (Profile, Qualifications, Personal Dashboard)
+- Phase 4: Trainer Module (Trainer profile, course creator, resource library)
+
+---
+
+## [0.4.0] - 2026-09-08
+### Added (Phase 3 — Trainee Module Complete)
+- **Trainee Database Models & Relationships:**
+  - Implemented `Qualification`, `WorkExperience`, `Skill`, `Interest`, and `Certificate` models in `backend/app/models/trainee.py` with foreign keys to `trainee_profiles.id` and `users.id`.
+  - Added cascade delete relationships in `backend/app/models/user.py` (`TraineeProfile` and `User`).
+  - Dual SQLite WAL & PostgreSQL compatibility maintained across all queries.
+- **RESTful Trainee API (`/api/v1/trainee`):**
+  - `GET /api/v1/trainee/profile`: Fetch current trainee's full profile including child lists.
+  - `PUT /api/v1/trainee/profile`: Update bio, designation, department, posting location, and avatar.
+  - `GET`, `POST`, `DELETE /api/v1/trainee/qualifications`: Academic degrees and certifications management.
+  - `GET`, `POST`, `DELETE /api/v1/trainee/work-experiences`: Operational posting history and responsibilities.
+  - `GET`, `POST`, `DELETE /api/v1/trainee/skills`: Technical competencies and proficiency tracking.
+  - `GET`, `POST`, `DELETE /api/v1/trainee/interests`: Learning preferences and focus domains.
+  - `GET`, `POST`, `DELETE /api/v1/trainee/certificates`: Verified certificate records management.
+  - `GET /api/v1/trainee/dashboard`: Dynamic profile completion score calculation (0–100%) and counter summary.
+- **Strict Data Ownership & RBAC Isolation:**
+  - Trainee endpoints protected with `require_trainee` and `get_current_approved_user`.
+  - All mutating and query operations strictly bound to `current_user.id` and `trainee_profile.id`; cross-trainee modification returns HTTP 404.
+- **Frontend Trainee Module Integration:**
+  - `traineeService.ts`: Typed client service for all trainee profile and sub-entity CRUD operations.
+  - `TraineeProfileModal.tsx`: Comprehensive 5-tab modal (Profile Overview & Bio, Qualifications, Work Experience, Skills & Interests, Certificates) with real-time profile completion progress calculation and toast notifications.
+  - Integrated with Navbar ("My Profile" button for authenticated trainees) and Dashboard Previews section ("Open Trainee Profile" button).
+- **Automated Testing Suite:**
+  - Added 8 test cases in `tests/backend/test_trainee.py` validating profile updates, qualifications, work experiences, skills, interests, certificates, completion calculation, and cross-trainee ownership isolation.
+  - Full test suite: 20/20 tests passing in Pytest.
+  - Frontend production build: 0 TypeScript errors.
 
 ---
 

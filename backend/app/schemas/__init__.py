@@ -9,6 +9,23 @@ from app.schemas.user import (
     TokenRefreshResponse,
     UserApprovalUpdate,
 )
+from app.schemas.trainee import (
+    TraineeProfileUpdate,
+    TraineeProfileResponse,
+    QualificationCreate,
+    QualificationResponse,
+    WorkExperienceCreate,
+    WorkExperienceResponse,
+    SkillCreate,
+    SkillResponse,
+    InterestCreate,
+    InterestResponse,
+    CertificateCreate,
+    CertificateResponse,
+    TraineeProfileFull,
+    TraineeDashboardResponse,
+    TraineeDashboardMetrics,
+)
 
 __all__ = [
     "HealthResponse",
@@ -21,4 +38,19 @@ __all__ = [
     "RefreshTokenRequest",
     "TokenRefreshResponse",
     "UserApprovalUpdate",
+    "TraineeProfileUpdate",
+    "TraineeProfileResponse",
+    "QualificationCreate",
+    "QualificationResponse",
+    "WorkExperienceCreate",
+    "WorkExperienceResponse",
+    "SkillCreate",
+    "SkillResponse",
+    "InterestCreate",
+    "InterestResponse",
+    "CertificateCreate",
+    "CertificateResponse",
+    "TraineeProfileFull",
+    "TraineeDashboardResponse",
+    "TraineeDashboardMetrics",
 ]

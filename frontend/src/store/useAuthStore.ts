@@ -16,6 +16,7 @@ interface AuthState {
   isAuthModalOpen: boolean;
   authModalTab: 'login' | 'register';
   isAdminModalOpen: boolean;
+  isTraineeModalOpen: boolean;
 
   // Actions
   openAuthModal: (tab?: 'login' | 'register') => void;
@@ -23,6 +24,8 @@ interface AuthState {
   setAuthModalTab: (tab: 'login' | 'register') => void;
   openAdminModal: () => void;
   closeAdminModal: () => void;
+  openTraineeModal: () => void;
+  closeTraineeModal: () => void;
   clearError: () => void;
   login: (credentials: UserLoginRequest) => Promise<void>;
   register: (data: UserRegisterRequest) => Promise<UserRegisterResponse>;
@@ -40,6 +43,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthModalOpen: false,
   authModalTab: 'login',
   isAdminModalOpen: false,
+  isTraineeModalOpen: false,
 
   openAuthModal: (tab = 'login') => {
     set({ isAuthModalOpen: true, authModalTab: tab, error: null });
@@ -55,6 +59,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   closeAdminModal: () => {
     set({ isAdminModalOpen: false });
+  },
+
+  openTraineeModal: () => {
+    set({ isTraineeModalOpen: true });
+  },
+
+  closeTraineeModal: () => {
+    set({ isTraineeModalOpen: false });
   },
 
   setAuthModalTab: (tab) => {

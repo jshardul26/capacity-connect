@@ -15,13 +15,20 @@ import { HealthCheck } from './components/common/HealthCheck';
 import { Footer } from './components/layout/Footer';
 import { AuthModal } from './components/auth/AuthModal';
 import { AdminApprovalModal } from './components/admin/AdminApprovalModal';
+import { TraineeProfileModal } from './components/trainee/TraineeProfileModal';
 import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
 import { HealthResponse } from './types';
 
 export const App: React.FC = () => {
   const [appHealth, setAppHealth] = useState<HealthResponse | null>(null);
-  const { isAdminModalOpen, closeAdminModal, loadSession } = useAuthStore();
+  const {
+    isAdminModalOpen,
+    closeAdminModal,
+    isTraineeModalOpen,
+    closeTraineeModal,
+    loadSession,
+  } = useAuthStore();
 
   useEffect(() => {
     // Probe backend health
@@ -81,9 +88,10 @@ export const App: React.FC = () => {
       {/* 14. 4-Column Institutional Footer */}
       <Footer />
 
-      {/* Authentication & Clearance Modals */}
+      {/* Authentication, Clearance, & Trainee Modals */}
       <AuthModal />
       <AdminApprovalModal isOpen={isAdminModalOpen} onClose={closeAdminModal} />
+      <TraineeProfileModal isOpen={isTraineeModalOpen} onClose={closeTraineeModal} />
     </div>
   );
 };

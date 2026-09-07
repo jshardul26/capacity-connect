@@ -1,8 +1,11 @@
 import uuid
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from sqlalchemy import String, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from app.models.trainee import Qualification, WorkExperience, Skill, Interest, Certificate
 
 from app.core.database import Base
 
@@ -92,6 +95,12 @@ class User(Base):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+    certificates: Mapped[list["Certificate"]] = relationship(
+        "Certificate",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
     def __repr__(self) -> str:
         return f"<User id='{self.id}' email='{self.email}' role='{self.role.name if self.role else self.role_id}' status='{self.status}'>"
@@ -115,7 +124,32 @@ class TraineeProfile(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now, onupdate=get_utc_now)
 
+    # Relationships
     user: Mapped["User"] = relationship("User", back_populates="trainee_profile")
+    qualifications: Mapped[list["Qualification"]] = relationship(
+        "Qualification",
+        back_populates="trainee_profile",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    work_experiences: Mapped[list["WorkExperience"]] = relationship(
+        "WorkExperience",
+        back_populates="trainee_profile",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    skills: Mapped[list["Skill"]] = relationship(
+        "Skill",
+        back_populates="trainee_profile",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    interests: Mapped[list["Interest"]] = relationship(
+        "Interest",
+        back_populates="trainee_profile",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
 
 class TrainerProfile(Base):

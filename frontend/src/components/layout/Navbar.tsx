@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon } from 'lucide-react';
+import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 export const Navbar: React.FC = () => {
@@ -10,6 +10,7 @@ export const Navbar: React.FC = () => {
     logout,
     openAuthModal,
     openAdminModal,
+    openTraineeModal,
   } = useAuthStore();
 
   const navLinks = [
@@ -71,6 +72,18 @@ export const Navbar: React.FC = () => {
                   >
                     <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
                     <span>Admin Clearance</span>
+                  </button>
+                )}
+
+                {/* Trainee Profile Button */}
+                {user.role === 'trainee' && (
+                  <button
+                    onClick={openTraineeModal}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-teal-950 bg-teal-100 hover:bg-teal-200 border border-teal-300 shadow-sm transition"
+                    title="Open Trainee Workspace & Profile"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5 text-teal-700" />
+                    <span>My Profile</span>
                   </button>
                 )}
 
@@ -180,6 +193,18 @@ export const Navbar: React.FC = () => {
                   >
                     <ShieldCheck className="w-4 h-4" />
                     <span>Admin Clearance Panel</span>
+                  </button>
+                )}
+                {user.role === 'trainee' && (
+                  <button
+                    onClick={() => {
+                      openTraineeModal();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-teal-950 bg-teal-100 border border-teal-300"
+                  >
+                    <GraduationCap className="w-4 h-4 text-teal-700" />
+                    <span>My Trainee Profile &amp; Qualifications</span>
                   </button>
                 )}
               </div>

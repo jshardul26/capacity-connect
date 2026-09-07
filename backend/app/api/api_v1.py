@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health, auth, admin
+from app.api.endpoints import health, auth, admin, trainee
 
 api_router = APIRouter()
 
@@ -12,5 +12,7 @@ api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 
 # Phase 2: Admin Approval Workflow Foundation Router
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin"])
-# - sync.router
-# - packs.router
+
+# Phase 3: Trainee Module Router
+api_router.include_router(trainee.router, prefix="/trainee", tags=["Trainee"])
+
