@@ -6,7 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 4: Trainer Module (Trainer profile, course creator, resource library)
+- Phase 5: Learning Management (Course catalog, modules, lessons, video streaming, progress tracking)
+
+---
+
+## [0.5.0] - 2026-09-08
+### Added (Phase 4 — Trainer Module Complete)
+- **Trainer Database Models & Relationships:**
+  - Implemented `TrainerExpertise`, `TrainerLibrary`, `Course`, `CourseModule`, `Lesson`, `Assessment`, and `Question` models in `backend/app/models/trainer.py`.
+  - Updated `User` and `TrainerProfile` in `backend/app/models/user.py` with `courses_created`, `assessments_created`, `expertise`, and `library_items` relationships with cascading delete semantics.
+  - Dual SQLite WAL & PostgreSQL compatibility maintained across all queries.
+- **RESTful Trainer API (`/api/v1/trainer`):**
+  - `GET`, `PUT /api/v1/trainer/profile`: Trainer identity, designation, division, years of domain experience, and biography management.
+  - `GET`, `POST`, `DELETE /api/v1/trainer/expertise`: Domain expertise and subject specialization CRUD.
+  - `GET`, `POST /api/v1/trainer/courses`: Course authoring and curriculum foundation.
+  - `GET`, `PUT`, `DELETE /api/v1/trainer/courses/{id}`: Course syllabus, estimated hours, category, level, and publishing status.
+  - `POST`, `DELETE /api/v1/trainer/courses/{id}/modules`: Course module management.
+  - `POST`, `DELETE /api/v1/trainer/modules/{id}/lessons`: Curriculum lesson creation and duration tracking.
+  - `GET`, `POST`, `DELETE /api/v1/trainer/questionnaires`: Assessment and questionnaire builder foundation.
+  - `POST`, `DELETE /api/v1/trainer/questionnaires/{id}/questions`: Multiple-choice / true-false question bank creation with JSON options.
+  - `GET`, `POST`, `DELETE /api/v1/trainer/library`: Trainer media, lecture slides, presentation, and study material library with SHA-256 cryptographic verification.
+  - `POST /api/v1/trainer/resources/upload`: Multipart resource uploader with automated checksum calculation.
+  - `GET /api/v1/trainer/dashboard`: Real-time aggregated metrics for authored courses, published curriculum, library items, questions, and participation foundation.
+  - `GET /api/v1/trainer/analytics/courses/{id}`: Course enrollment and completion monitoring foundation.
+- **Strict RBAC & Data Ownership Protection:**
+  - Enforced `require_trainer` and `get_current_approved_user` across all endpoints.
+  - Cross-trainer data modification blocked (Trainer B cannot view, modify, or delete Trainer A's courses, library, or questionnaires; returns 404).
+  - Trainee access to trainer endpoints blocked with HTTP 403 Forbidden.
+- **Frontend Trainer Studio Integration:**
+  - `trainerService.ts`: Full typed client service for all trainer endpoints.
+  - `TrainerStudioModal.tsx`: Comprehensive 5-tab studio (Dashboard Overview, Course Studio & Curriculum Manager, Questionnaire Builder, Trainer Library, and Profile & Expertise).
+  - Integrated into `Navbar.tsx` (desktop and mobile drawer for authenticated trainers) and `DashboardPreviewsSection.tsx` ("Open Trainer Studio").
+- **Automated Testing Suite:**
+  - Added 8 test cases in `tests/backend/test_trainer.py` validating profile, expertise, courses/modules/lessons, questionnaires/questions, library/upload, dashboard analytics, cross-trainer isolation, and RBAC barriers.
+  - Full test suite: 28/28 tests passing.
+  - Frontend production build: 0 TypeScript errors.
 
 ---
 

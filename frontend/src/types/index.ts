@@ -65,4 +65,5 @@ export interface CompetencyItem {
 
 export * from './auth';
 export * from './trainee';
+export * from './trainer';
 

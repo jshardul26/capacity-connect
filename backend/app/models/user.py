@@ -1,11 +1,12 @@
 import uuid
 from datetime import datetime, timezone
 from typing import Optional, TYPE_CHECKING
-from sqlalchemy import String, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import String, Integer, Text, DateTime, ForeignKey, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from app.models.trainee import Qualification, WorkExperience, Skill, Interest, Certificate
+    from app.models.trainer import TrainerExpertise, TrainerLibrary, Course, Assessment
 
 from app.core.database import Base
 
@@ -101,6 +102,18 @@ class User(Base):
         cascade="all, delete-orphan",
         lazy="selectin"
     )
+    courses_created: Mapped[list["Course"]] = relationship(
+        "Course",
+        back_populates="trainer",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    assessments_created: Mapped[list["Assessment"]] = relationship(
+        "Assessment",
+        back_populates="creator",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
     def __repr__(self) -> str:
         return f"<User id='{self.id}' email='{self.email}' role='{self.role.name if self.role else self.role_id}' status='{self.status}'>"
@@ -163,11 +176,48 @@ class TrainerProfile(Base):
         nullable=False
     )
     designation: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    department: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    experience_years: Mapped[Optional[float]] = mapped_column(nullable=True)
-    bio: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    division: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    years_of_experience: Mapped[Optional[float]] = mapped_column(Float, nullable=True, default=0.0)
+    biography: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now, onupdate=get_utc_now)
 
+    # Relationships
     user: Mapped["User"] = relationship("User", back_populates="trainer_profile")
+    expertise: Mapped[list["TrainerExpertise"]] = relationship(
+        "TrainerExpertise",
+        back_populates="trainer_profile",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+    library_items: Mapped[list["TrainerLibrary"]] = relationship(
+        "TrainerLibrary",
+        back_populates="trainer_profile",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
+
+    @property
+    def department(self) -> Optional[str]:
+        return self.division
+
+    @department.setter
+    def department(self, value: Optional[str]) -> None:
+        self.division = value
+
+    @property
+    def experience_years(self) -> Optional[float]:
+        return self.years_of_experience
+
+    @experience_years.setter
+    def experience_years(self, value: Optional[float]) -> None:
+        self.years_of_experience = value
+
+    @property
+    def bio(self) -> Optional[str]:
+        return self.biography
+
+    @bio.setter
+    def bio(self, value: Optional[str]) -> None:
+        self.biography = value

@@ -11,7 +11,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 export const DashboardPreviewsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'trainee' | 'trainer' | 'admin'>('trainee');
-  const { user, openAuthModal, openAdminModal, openTraineeModal } = useAuthStore();
+  const { user, openAuthModal, openAdminModal, openTraineeModal, openTrainerModal } = useAuthStore();
 
   return (
     <section id="role-previews" className="py-20 bg-white border-b border-slate-200">
@@ -160,12 +160,28 @@ export const DashboardPreviewsSection: React.FC = () => {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
-                  <div className="text-xs text-amber-400 font-mono">TRAINER STUDIO &bull; DEMO WORKSPACE PREVIEW</div>
-                  <h3 className="text-xl font-bold text-white mt-0.5">[Demo Workspace] Dr. Rajesh Singh &bull; Lead Instructor</h3>
-                  <p className="text-xs text-slate-400">Division: Radar Meteorology &bull; 14.5 Years Domain Experience (Sample Profile)</p>
+                  <div className="text-xs text-amber-400 font-mono">
+                    TRAINER STUDIO &bull; {user?.role === 'trainer' ? 'LIVE SESSION' : 'DEMO WORKSPACE PREVIEW'}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mt-0.5">
+                    {user?.role === 'trainer' ? `Trainer Studio: ${user.full_name}` : '[Demo Workspace] Dr. Rajesh Singh • Lead Instructor'}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    {user?.role === 'trainer' ? 'Authorized IMD Trainer &bull; Curriculum & Library Studio' : 'Division: Radar Meteorology • 14.5 Years Domain Experience (Sample Profile)'}
+                  </p>
                 </div>
-                <button className="px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow">
-                  + Create New Course
+                <button
+                  onClick={() => {
+                    if (user?.role === 'trainer') {
+                      openTrainerModal();
+                    } else {
+                      openAuthModal('login');
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow flex items-center gap-1.5 transition"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>{user?.role === 'trainer' ? 'Open Trainer Studio' : '+ Author Course (Sign In)'}</span>
                 </button>
               </div>
 

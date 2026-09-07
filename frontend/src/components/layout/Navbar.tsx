@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap } from 'lucide-react';
+import { CloudRain, Menu, X, LogOut, ShieldCheck, User as UserIcon, GraduationCap, BookOpen } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 export const Navbar: React.FC = () => {
@@ -11,6 +11,7 @@ export const Navbar: React.FC = () => {
     openAuthModal,
     openAdminModal,
     openTraineeModal,
+    openTrainerModal,
   } = useAuthStore();
 
   const navLinks = [
@@ -84,6 +85,17 @@ export const Navbar: React.FC = () => {
                   >
                     <GraduationCap className="w-3.5 h-3.5 text-teal-700" />
                     <span>My Profile</span>
+                  </button>
+                )}
+
+                {user.role === 'trainer' && (
+                  <button
+                    onClick={openTrainerModal}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-amber-950 bg-amber-100 hover:bg-amber-200 border border-amber-300 shadow-sm transition"
+                    title="Open Trainer Studio & Course Creator"
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Trainer Studio</span>
                   </button>
                 )}
 
@@ -205,6 +217,18 @@ export const Navbar: React.FC = () => {
                   >
                     <GraduationCap className="w-4 h-4 text-teal-700" />
                     <span>My Trainee Profile &amp; Qualifications</span>
+                  </button>
+                )}
+                {user.role === 'trainer' && (
+                  <button
+                    onClick={() => {
+                      openTrainerModal();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-amber-950 bg-amber-100 border border-amber-300"
+                  >
+                    <BookOpen className="w-4 h-4 text-amber-700" />
+                    <span>Trainer Studio &amp; Courses</span>
                   </button>
                 )}
               </div>

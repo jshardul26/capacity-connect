@@ -16,6 +16,7 @@ import { Footer } from './components/layout/Footer';
 import { AuthModal } from './components/auth/AuthModal';
 import { AdminApprovalModal } from './components/admin/AdminApprovalModal';
 import { TraineeProfileModal } from './components/trainee/TraineeProfileModal';
+import { TrainerStudioModal } from './components/trainer/TrainerStudioModal';
 import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
 import { HealthResponse } from './types';
@@ -88,10 +89,11 @@ export const App: React.FC = () => {
       {/* 14. 4-Column Institutional Footer */}
       <Footer />
 
-      {/* Authentication, Clearance, & Trainee Modals */}
+      {/* Authentication, Clearance, Trainee & Trainer Modals */}
       <AuthModal />
       <AdminApprovalModal isOpen={isAdminModalOpen} onClose={closeAdminModal} />
       <TraineeProfileModal isOpen={isTraineeModalOpen} onClose={closeTraineeModal} />
+      <TrainerStudioModal />
     </div>
   );
 };
