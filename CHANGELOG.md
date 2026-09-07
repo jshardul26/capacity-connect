@@ -6,11 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 1: Project Foundation (Docker, Backend, Frontend, Database)
+- Phase 2: Authentication & RBAC (Signup, Login, JWT, Admin Approval, Role Guards)
 
 ---
 
-## [0.1.0] - 2026-09-08
+## [0.2.0] - 2026-09-08
+### Added (Phase 1 — Project Foundation Complete)
+- **Docker Compose Setup:** Created `docker-compose.yml` (production: PostgreSQL 16, MinIO, Backend, Frontend, Nginx reverse proxy) and `docker-compose.dev.yml` for local backing services.
+- **FastAPI Backend Scaffolding:** Modular architecture with `app/core/config.py`, `app/core/database.py` (SQLAlchemy 2.0 async engine with dual-dialect PostgreSQL/SQLite support), `app/core/security.py`, `app/api/api_v1.py`, and Alembic migration framework (`alembic.ini`, `alembic/env.py`).
+- **Health Check Endpoints:** Implemented `GET /api/v1/health` (app status & mode), `GET /api/v1/health/db` (active DB ping & latency), and `GET /api/v1/health/full` (aggregated system status).
+- **React + Vite + Tailwind Frontend:** Initialized React 18, TypeScript, Tailwind CSS with MoES/IMD branding, responsive Header, Footer, and live interactive `HealthCheck` connectivity tester.
+- **Database Initializations:** Created `database/central_postgres.sql` and `database/local_sqlite.sql` with full canonical tables and meteorological seed competencies.
+- **Environment & Documentation:** Standardized `.env.example`, `backend/.env.example`, `frontend/.env.example`, and comprehensive `docs/development_guide.md`.
+- **Automated Testing:** Implemented Pytest async test suite in `tests/backend/test_health.py` (4/4 passed) and verified clean frontend TypeScript production build (`npm run build`).
 ### Added (Phase 0 — Blueprint & Architecture Complete)
 - **Master Project Blueprint (`PROJECT_BLUEPRINT.md`):** Complete 30-section frozen master technical specification covering MoES/IMD SIH problem statement 26075, requirements, modular monolith architecture, offline-first ecosystem, Capacity Connect OS, bootable USB, LAN learning server, scikit-learn competency engine, dual database design, API design, security, testing, and deployment roadmap.
 - **System Architecture (`ARCHITECTURE.md`):** Comprehensive topology diagrams, data flows, offline attempt HMAC tamper-proofing, two-way sync protocol with delta push/pull and conflict resolution rules, LAN classroom mode, and bootable USB partition architecture.
