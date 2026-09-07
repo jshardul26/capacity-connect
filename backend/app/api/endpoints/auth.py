@@ -1,6 +1,7 @@
 import logging
-from typing import Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Dict, Any, Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Security
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -14,8 +15,10 @@ from app.core.security import (
     create_access_token,
     create_refresh_token,
     decode_token,
+    revoke_token,
 )
 from app.core.dependencies import (
+    security_bearer,
     get_current_user,
     require_approved_user,
     require_role,
@@ -272,12 +275,15 @@ async def get_me(
     summary="Logout user and invalidate session"
 )
 async def logout(
+    credentials: Optional[HTTPAuthorizationCredentials] = Security(security_bearer),
     current_user: User = Depends(get_current_user)
 ) -> Dict[str, str]:
     """
-    Terminates active session for the authenticated user.
+    Terminates active session for the authenticated user and revokes token.
     """
-    logger.info(f"User '{current_user.email}' logged out.")
+    if credentials and credentials.credentials:
+        revoke_token(credentials.credentials)
+    logger.info(f"User '{current_user.email}' logged out and access token revoked.")
     return {"message": "Logged out successfully"}
 
 
@@ -287,11 +293,14 @@ async def logout(
 
 @router.get(
     "/test/trainee",
-    summary="Trainee-only protected test route"
+    summary="Trainee-only protected test route",
+    include_in_schema=settings.ENVIRONMENT != "production"
 )
 async def test_trainee_access(
     current_user: User = Depends(require_trainee)
 ) -> Dict[str, Any]:
+    if settings.ENVIRONMENT == "production":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endpoint not found.")
     return {
         "message": "Trainee authorization granted",
         "user_id": current_user.id,
@@ -301,11 +310,14 @@ async def test_trainee_access(
 
 @router.get(
     "/test/trainer",
-    summary="Trainer-only protected test route"
+    summary="Trainer-only protected test route",
+    include_in_schema=settings.ENVIRONMENT != "production"
 )
 async def test_trainer_access(
     current_user: User = Depends(require_trainer)
 ) -> Dict[str, Any]:
+    if settings.ENVIRONMENT == "production":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endpoint not found.")
     return {
         "message": "Trainer authorization granted",
         "user_id": current_user.id,
@@ -315,11 +327,14 @@ async def test_trainer_access(
 
 @router.get(
     "/test/admin",
-    summary="Admin-only protected test route"
+    summary="Admin-only protected test route",
+    include_in_schema=settings.ENVIRONMENT != "production"
 )
 async def test_admin_access(
     current_user: User = Depends(require_admin)
 ) -> Dict[str, Any]:
+    if settings.ENVIRONMENT == "production":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endpoint not found.")
     return {
         "message": "Admin authorization granted",
         "user_id": current_user.id,

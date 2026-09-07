@@ -162,12 +162,19 @@ async def test_auth_me_endpoint_and_token_refresh(async_client: AsyncClient):
     assert "access_token" in refresh_data
     assert refresh_data["token_type"] == "bearer"
 
-    # 6. Logout
+    # 6. Logout and verify token revocation
     logout_res = await async_client.post(
         "/api/v1/auth/logout",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert logout_res.status_code == 200
+
+    # 7. Access /me with revoked token -> 401
+    post_logout_res = await async_client.get(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert post_logout_res.status_code == 401
 
 
 @pytest.mark.asyncio
@@ -276,3 +283,30 @@ async def test_admin_approval_and_rbac_workflow(async_client: AsyncClient):
     )
     assert tr_login.status_code == 403
     assert "rejected" in tr_login.json()["detail"].lower()
+
+
+@pytest.mark.asyncio
+async def test_dev_endpoints_blocked_in_production(async_client: AsyncClient, monkeypatch):
+    """Verify development-only test routes return 404 in production environment."""
+    from app.core.config import settings
+
+    admin_login = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": DEFAULT_ADMIN_EMAIL, "password": DEFAULT_ADMIN_PASSWORD},
+    )
+    admin_token = admin_login.json()["access_token"]
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+
+    # Simulate production environment
+    monkeypatch.setattr(settings, "ENVIRONMENT", "production")
+
+    # In production, /test/* endpoints must return 404 Not Found
+    res1 = await async_client.get("/api/v1/auth/test/trainee", headers=admin_headers)
+    assert res1.status_code == 404
+
+    res2 = await async_client.get("/api/v1/auth/test/trainer", headers=admin_headers)
+    assert res2.status_code == 404
+
+    res3 = await async_client.get("/api/v1/auth/test/admin", headers=admin_headers)
+    assert res3.status_code == 404
+

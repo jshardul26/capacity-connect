@@ -58,7 +58,24 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: Optional[timed
     return encoded_jwt
 
 
+# In-memory revocation registry for logged-out / revoked JWT tokens
+_REVOKED_TOKENS: set[str] = set()
+
+
+def revoke_token(token: str) -> None:
+    """Marks a JWT token as revoked."""
+    _REVOKED_TOKENS.add(token)
+
+
+def is_token_revoked(token: str) -> bool:
+    """Checks if a JWT token has been revoked."""
+    return token in _REVOKED_TOKENS
+
+
 def decode_token(token: str) -> Dict[str, Any]:
     """Decodes and validates a JWT token using the configured secret and algorithm."""
+    if is_token_revoked(token):
+        raise JWTError("Token has been revoked.")
     return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+
 
