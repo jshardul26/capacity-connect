@@ -19,13 +19,14 @@ from app.core.database import engine, Base
 
 @pytest.fixture(scope="function", autouse=True)
 async def setup_test_db():
-    # Create test database tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    from app.core.init_db import init_db
+    # Create test database tables and seed canonical roles/admin
+    await init_db()
     yield
     # Cleanup test tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+
 
 
 @pytest.fixture(scope="function")

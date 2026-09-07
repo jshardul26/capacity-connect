@@ -1,5 +1,6 @@
 import React from 'react';
-import { Phone, Mail, Globe, MapPin, Database } from 'lucide-react';
+import { Phone, Mail, Globe, MapPin, Database, Shield } from 'lucide-react';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface TopBarProps {
   appMode?: string;
@@ -12,6 +13,9 @@ export const TopBar: React.FC<TopBarProps> = ({
   stationCode = 'IMD-HQ-DELHI',
   isOnline = true,
 }) => {
+  const { user } = useAuthStore();
+  const displayStation = user?.station_code || stationCode;
+
   return (
     <div className="bg-slate-950 text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
@@ -34,9 +38,16 @@ export const TopBar: React.FC<TopBarProps> = ({
 
         {/* System & Station Node Information */}
         <div className="flex items-center gap-3 text-[11px]">
+          {user && (
+            <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-950 border border-blue-800 text-blue-200 font-mono">
+              <Shield className="w-3 h-3 text-teal-400" />
+              <span>Officer: <strong className="text-white capitalize">{user.role}</strong></span>
+            </div>
+          )}
+
           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 font-mono text-slate-300">
             <MapPin className="w-3 h-3 text-teal-400" />
-            <span>Node: <strong className="text-white font-semibold">{stationCode}</strong></span>
+            <span>Node: <strong className="text-white font-semibold">{displayStation}</strong></span>
           </div>
 
           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 font-mono text-slate-300">

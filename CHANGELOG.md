@@ -6,11 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## [Unreleased]
-- Phase 2: Authentication & RBAC (Signup, Login, JWT, Admin Approval, Role Guards)
+- Phase 3: Trainee Module (Profile, Qualifications, Personal Dashboard)
 
 ---
 
-## [0.2.2] - 2026-09-08
+## [0.3.0] - 2026-09-08
+### Added (Phase 2 — Authentication & RBAC Complete)
+- **Direct Bcrypt Password Hashing & Jose JWT Security:** Implemented cryptographic credential management in `backend/app/core/security.py` using direct `bcrypt` methods and python-jose for HS256 access and refresh tokens.
+- **SQLAlchemy User & Role Persistence:** Created `Role`, `User`, `TraineeProfile`, and `TrainerProfile` ORM models in `backend/app/models/user.py` adhering strictly to canonical database schema specifications.
+- **Canonical Database Initialization (`init_db`):** Implemented automated table creation and canonical seeding for system roles (`trainee`, `trainer`, `admin`) and default administrator (`admin.imd@moes.gov.in`).
+- **RESTful Authentication API (`/api/v1/auth`):**
+  - `POST /api/v1/auth/signup`: User self-registration with default `pending_approval` status.
+  - `POST /api/v1/auth/login`: Credential verification, approval check, and dual JWT issuance.
+  - `POST /api/v1/auth/refresh`: Access token refresh via valid refresh token.
+  - `GET /api/v1/auth/me`: Authenticated profile and role retrieval.
+  - `POST /api/v1/auth/logout`: Session termination endpoint.
+  - Test endpoints: `/test/trainee`, `/test/trainer`, `/test/admin` for RBAC verification.
+- **Administrative Clearance & Governance (`/api/v1/admin`):**
+  - `GET /api/v1/admin/users/pending`: Retrieve pending account registration queue.
+  - `POST /api/v1/admin/users/{id}/approve`: Approve pending officer registrations.
+  - `POST /api/v1/admin/users/{id}/reject`: Reject registration requests.
+- **Zustand Frontend State Management & API Services:**
+  - `authService.ts`: Full typed client for authentication, profile, refresh, and administrative operations.
+  - `useAuthStore.ts`: Central store managing user session, JWT tokens, modal visibility, and localStorage caching.
+- **Frontend Auth & Governance UI Components:**
+  - `AuthModal.tsx`: Tabbed Sign In / Register dialog with role selection, MoES protocol guidance, and quick evaluation login.
+  - `AdminApprovalModal.tsx`: Real-time administrative clearance panel to review, approve, and reject user registrations.
+  - `ProtectedRoute.tsx`: Route and view-level RBAC guard.
+  - Enhanced `Navbar.tsx` and `TopBar.tsx` with live user badge, role indicator, and sign in/out controls.
+  - Integrated interactive role authentication and clearance queue in `DashboardPreviewsSection.tsx`.
+- **Comprehensive Backend Testing:**
+  - 8 new async test cases in `tests/backend/test_auth.py` covering registration, duplicates, unapproved access barriers, login, token refresh, admin clearance, and role-based endpoint isolation.
+  - Verified 12/12 passing tests across full Pytest suite and 0 TypeScript build errors.
 ### Changed (Frontend Data & Content Audit)
 - **Elimination of Unsupported Claims:** Removed arbitrary quantitative platform metrics (`500+ field observatories`, `50+ courses`, `1,200+ trainees`, `150+ trainers`) and aligned copy with canonical blueprint phrasing.
 - **Dynamic Pending UI States (`—`):** Converted unsupported platform counters in `StatsSection` and `DashboardPreviewsSection` to clean pending states (`—`) with labels indicating future phase backend integration.

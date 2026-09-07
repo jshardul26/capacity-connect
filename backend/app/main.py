@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api.api_v1 import api_router
 from app.core.database import engine
+from app.core.init_db import init_db
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -20,6 +21,11 @@ async def lifespan(app: FastAPI):
     # Startup lifecycle
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION} in [{settings.APP_MODE.upper()}] mode...")
     logger.info(f"Station Code: {settings.STATION_CODE} | Environment: {settings.ENVIRONMENT}")
+    try:
+        await init_db()
+        logger.info("Database initialized and canonical roles verified.")
+    except Exception as exc:
+        logger.error(f"Error during database initialization: {exc}", exc_info=True)
     yield
     # Shutdown lifecycle
     logger.info(f"Shutting down {settings.APP_NAME} database engine...")

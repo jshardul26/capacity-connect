@@ -13,17 +13,25 @@ import { DashboardPreviewsSection } from './components/home/DashboardPreviewsSec
 import { CTASection } from './components/home/CTASection';
 import { HealthCheck } from './components/common/HealthCheck';
 import { Footer } from './components/layout/Footer';
+import { AuthModal } from './components/auth/AuthModal';
+import { AdminApprovalModal } from './components/admin/AdminApprovalModal';
+import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
 import { HealthResponse } from './types';
 
 export const App: React.FC = () => {
   const [appHealth, setAppHealth] = useState<HealthResponse | null>(null);
+  const { isAdminModalOpen, closeAdminModal, loadSession } = useAuthStore();
 
   useEffect(() => {
+    // Probe backend health
     healthService.getAppHealth()
       .then(setAppHealth)
       .catch(() => setAppHealth(null));
-  }, []);
+
+    // Restore authenticated session from localStorage if present
+    loadSession();
+  }, [loadSession]);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-amber-400 selection:text-slate-950">
@@ -72,6 +80,10 @@ export const App: React.FC = () => {
 
       {/* 14. 4-Column Institutional Footer */}
       <Footer />
+
+      {/* Authentication & Clearance Modals */}
+      <AuthModal />
+      <AdminApprovalModal isOpen={isAdminModalOpen} onClose={closeAdminModal} />
     </div>
   );
 };

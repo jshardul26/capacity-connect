@@ -1,19 +1,16 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import health
+from app.api.endpoints import health, auth, admin
 
 api_router = APIRouter()
 
 # Register core health router
 api_router.include_router(health.router, tags=["Health"])
 
-# Future Phase routers will be registered here according to API_CONTRACT.md:
-# - auth.router
-# - trainee.router
-# - trainer.router
-# - courses.router
-# - assessments.router
-# - competency.router
-# - admin.router
+# Phase 2: Authentication & RBAC Router
+api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+
+# Phase 2: Admin Approval Workflow Foundation Router
+api_router.include_router(admin.router, prefix="/admin", tags=["Admin"])
 # - sync.router
 # - packs.router

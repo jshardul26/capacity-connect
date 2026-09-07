@@ -1,22 +1,28 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Any, Union
-from passlib.context import CryptContext
-from jose import jwt
+from typing import Optional, Any, Union, Dict
+import bcrypt
+from jose import jwt, JWTError
 
 from app.core.config import settings
-
-# Password hashing context using bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifies a plain password against the stored bcrypt hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return bcrypt.checkpw(
+            plain_password.encode("utf-8"),
+            hashed_password.encode("utf-8")
+        )
+    except Exception:
+        return False
 
 
 def get_password_hash(password: str) -> str:
-    """Generates a bcrypt hash for a plain password."""
-    return pwd_context.hash(password)
+    """Generates a secure bcrypt hash for a plain password."""
+    # Truncate to 72 bytes if necessary per bcrypt maximum length
+    password_bytes = password.encode("utf-8")[:72]
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password_bytes, salt).decode("utf-8")
 
 
 def create_access_token(subject: Union[str, Any], role: str, expires_delta: Optional[timedelta] = None) -> str:
@@ -50,3 +56,9 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: Optional[timed
     }
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+
+
+def decode_token(token: str) -> Dict[str, Any]:
+    """Decodes and validates a JWT token using the configured secret and algorithm."""
+    return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+

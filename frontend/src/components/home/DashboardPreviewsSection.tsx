@@ -7,9 +7,11 @@ import {
   ShieldCheck, 
   AlertCircle
 } from 'lucide-react';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export const DashboardPreviewsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'trainee' | 'trainer' | 'admin'>('trainee');
+  const { user, openAuthModal, openAdminModal } = useAuthStore();
 
   return (
     <section id="role-previews" className="py-20 bg-white border-b border-slate-200">
@@ -187,25 +189,38 @@ export const DashboardPreviewsSection: React.FC = () => {
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
-                  <div className="text-xs text-purple-400 font-mono">ADMIN COMMAND &bull; DEMO WORKSPACE PREVIEW</div>
-                  <h3 className="text-xl font-bold text-white mt-0.5">Central Portal Administration Console</h3>
-                  <p className="text-xs text-slate-400">Ministry of Earth Sciences &bull; India Meteorological Department (Prototype)</p>
+                  <div className="text-xs text-purple-400 font-mono">ADMIN COMMAND &bull; {user?.role === 'admin' ? 'LIVE SESSION' : 'DEMO WORKSPACE PREVIEW'}</div>
+                  <h3 className="text-xl font-bold text-white mt-0.5">
+                    {user?.role === 'admin' ? `Admin Console: ${user.full_name}` : 'Central Portal Administration Console'}
+                  </h3>
+                  <p className="text-xs text-slate-400">Ministry of Earth Sciences &bull; India Meteorological Department</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    Sample: 3 Approvals
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    Local Node Active
-                  </span>
+                  {user?.role === 'admin' ? (
+                    <button
+                      onClick={openAdminModal}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow flex items-center gap-2 transition"
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Review Pending Approvals</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => openAuthModal('login')}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-800 hover:bg-blue-700 shadow flex items-center gap-2 transition"
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Sign In as Admin</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="text-slate-400 text-[11px] font-mono">REGISTERED USERS</div>
-                  <div className="text-2xl font-black font-mono text-white mt-1">—</div>
-                  <div className="text-[10px] text-slate-400">Live data pending (Phase 2)</div>
+                  <div className="text-slate-400 text-[11px] font-mono">AUTHENTICATION ENGINE</div>
+                  <div className="text-xl font-bold font-mono text-emerald-400 mt-1">RBAC v1.0</div>
+                  <div className="text-[10px] text-slate-400">JWT + Bcrypt (Active)</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
                   <div className="text-slate-400 text-[11px] font-mono">STATION OS NODES</div>
@@ -218,18 +233,20 @@ export const DashboardPreviewsSection: React.FC = () => {
                   <div className="text-[10px] text-slate-400">Populates on sync (Phase 6/10)</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                  <div className="text-slate-400 text-[11px] font-mono">PENDING SYNC QUEUE</div>
-                  <div className="text-2xl font-black font-mono text-emerald-400 mt-1">0 Delta</div>
-                  <div className="text-[10px] text-slate-400">Heartbeat Check Nominal</div>
+                  <div className="text-slate-400 text-[11px] font-mono">PENDING CLEARANCE QUEUE</div>
+                  <div className="text-xl font-black font-mono text-amber-400 mt-1">
+                    {user?.role === 'admin' ? 'Live Queue Available' : 'Requires Admin Auth'}
+                  </div>
+                  <div className="text-[10px] text-slate-400">Click Review to inspect</div>
                 </div>
               </div>
 
               <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs text-slate-300">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span>Governance Controls: User role elevation, homepage bulletin CMS, and sync audit logging.</span>
+                  <span>Governance Controls: User role elevation, identity clearance, and sync audit logging.</span>
                 </div>
-                <span className="font-mono text-amber-300">Phase 7 Specification</span>
+                <span className="font-mono text-amber-300">Phase 2 Implemented</span>
               </div>
             </div>
           )}

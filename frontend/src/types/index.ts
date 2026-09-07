@@ -62,3 +62,5 @@ export interface CompetencyItem {
   targetBenchmark: number;    // 0.0 to 1.0
   recommendedCourse: string;
 }
+
+export * from './auth';
