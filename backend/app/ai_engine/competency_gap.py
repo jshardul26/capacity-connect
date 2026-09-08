@@ -134,8 +134,9 @@ def compute_skill_gaps(
     for comp_name, req_level in requirements.items():
         curr_level = current_proficiencies.get(comp_name, 0.0)
         gap = max(0.0, round(req_level - curr_level, 2))
-        total_required += req_level
-        total_gap += gap
+        weight = float((next((c.get("criticality_weight", 1.0) for c in (all_competencies or []) if c["name"] == comp_name), 1.0)))
+        total_required += weight * req_level
+        total_gap += weight * gap
 
         gaps_list.append({
             "competency": comp_name,
@@ -143,6 +144,7 @@ def compute_skill_gaps(
             "required": round(req_level, 2),
             "current": round(curr_level, 2),
             "gap": gap,
+            "weighted_gap": round(weight * gap, 2),
             "is_met": gap == 0.0,
         })
 
@@ -323,6 +325,12 @@ def match_trainers_for_subject(
         years_exp = float(t.get("years_of_experience") or 0.0)
         # A score is only used when it is backed by recorded course feedback.
         sat_rating = max(0.0, min(5.0, float(t.get("satisfaction_rating") or 0.0)))
+        availability_confirmed = bool(t.get("availability_confirmed", False))
+
+        # Availability is a required matching input.  Unconfirmed availability
+        # is excluded rather than inferred from unrelated profile data.
+        if not availability_confirmed:
+            continue
 
         # Expertise list: List[{"subject": str, "proficiency": str, "years_in_subject": float}]
         expertise_list = t.get("expertise", [])
@@ -392,6 +400,7 @@ def match_trainers_for_subject(
             "composite_score": composite_score,
             "match_percentage": round(composite_score * 100, 1),
             "matched_expertise": matched_expertise_title,
+            "availability_confirmed": availability_confirmed,
             "rationale": rationale,
         })
 

@@ -96,6 +96,11 @@ Thumbs.db
 *.db-wal
 /var/capacity-connect/
 /backend/data/
+/data/
 /frontend/dist/
 content_store/
 *.ccpack
+
+# Local tooling / scratch artifacts
+.freebuff/
+.test-venv/

@@ -1,3 +1,5 @@
+import secrets
+import time
 import uuid
 from datetime import datetime, timezone
 from typing import Optional, TYPE_CHECKING
@@ -15,6 +17,14 @@ def generate_uuid_str() -> str:
     return str(uuid.uuid4())
 
 
+def generate_uuid7_str() -> str:
+    """Generate a time-ordered RFC 9562 UUIDv7 without a new dependency."""
+    timestamp_ms = int(time.time() * 1000) & ((1 << 48) - 1)
+    value = (timestamp_ms << 80) | (0x7 << 76) | (secrets.randbits(12) << 64)
+    value |= (0b10 << 62) | secrets.randbits(62)
+    return str(uuid.UUID(int=value))
+
+
 def get_utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -26,7 +36,7 @@ class AssessmentAttempt(Base):
     """
     __tablename__ = "assessment_attempts"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=generate_uuid_str)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=generate_uuid7_str)
     assessment_id: Mapped[str] = mapped_column(
         String(36),
         ForeignKey("assessments.id", ondelete="CASCADE"),

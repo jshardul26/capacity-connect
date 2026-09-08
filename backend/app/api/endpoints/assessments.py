@@ -717,6 +717,13 @@ async def submit_assessment_answers(
         "attempt_id": attempt.id, "assessment_id": assessment.id, "user_id": current_user.id,
         "score_obtained": attempt.score_obtained, "is_passed": attempt.is_passed,
         "attempt_signature": attempt.attempt_signature,
+        "attempt_status": attempt.attempt_status,
+        "start_time": attempt.start_time.isoformat(),
+        "end_time": attempt.end_time.isoformat() if attempt.end_time else None,
+        "answers": [
+            {"question_id": question_id, "selected_option": selected_option}
+            for question_id, selected_option in submitted_answers_map.items()
+        ],
     })
     await db.commit()
     await db.refresh(attempt)

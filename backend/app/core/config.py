@@ -57,9 +57,11 @@ class Settings(BaseSettings):
 
     # Offline / Local Paths
     LOCAL_CONTENT_STORE_PATH: str = "./data/content_store"
+    LOCAL_FRONTEND_PATH: str = ""
     STATION_CODE: str = "IMD-HQ-DELHI"
     CENTRAL_SYNC_URL: str = ""
     SYNC_HMAC_SECRET: str = "dev_local_sync_hmac_secret_change_in_production"
+    CONTENT_PACK_HMAC_SECRET: str = "dev_content_pack_hmac_secret_change_in_production"
 
     @property
     def effective_database_url(self) -> str:

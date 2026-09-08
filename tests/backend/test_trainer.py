@@ -374,6 +374,37 @@ async def test_trainer_library_crud_and_upload(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
+async def test_trainer_resource_upload_rejects_unsafe_files(async_client: AsyncClient):
+    """Phase 13 security: uploads enforce extension allowlists and sanitize filenames."""
+    token = await create_and_approve_trainer(async_client, "trainer.sec@imd.gov.in", "Dr. S. Kulkarni")
+    headers = {"Authorization": f"Bearer {token}"}
+    data = {"title": "Unsafe Upload", "resource_type": "study_material"}
+
+    # 1. Hidden executable extension must be rejected.
+    rejected = await async_client.post(
+        "/api/v1/trainer/resources/upload", headers=headers,
+        files={"file": ("payload.exe", io.BytesIO(b"MZ"), "application/octet-stream")}, data=data,
+    )
+    assert rejected.status_code == 422
+
+    # 2. Unknown resource types must be rejected.
+    rejected_type = await async_client.post(
+        "/api/v1/trainer/resources/upload", headers=headers,
+        files={"file": ("notes.pdf", io.BytesIO(b"pdf"), "application/pdf")},
+        data={**data, "resource_type": "script"},
+    )
+    assert rejected_type.status_code == 422
+
+    # 3. Path traversal in the client filename is neutralized to a basename.
+    traversing = await async_client.post(
+        "/api/v1/trainer/resources/upload", headers=headers,
+        files={"file": ("../../etc/cron.d/evil.pdf", io.BytesIO(b"PDF"), "application/pdf")}, data=data,
+    )
+    assert traversing.status_code == 201
+    assert ".." not in traversing.json()["file_path"], "stored path must never contain traversal segments"
+
+
+@pytest.mark.asyncio
 async def test_trainer_dashboard_and_analytics(async_client: AsyncClient):
     """Test trainer dashboard counters and performance monitoring foundation."""
     token = await create_and_approve_trainer(async_client, "trainer.dash@imd.gov.in", "Dr. F. Nair")

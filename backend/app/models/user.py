@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 from typing import Optional, TYPE_CHECKING
-from sqlalchemy import String, Integer, Text, DateTime, ForeignKey, Float
+from sqlalchemy import String, Integer, Text, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
@@ -236,6 +236,9 @@ class TrainerProfile(Base):
     designation: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     division: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     years_of_experience: Mapped[Optional[float]] = mapped_column(Float, nullable=True, default=0.0)
+    # Explicit self-declared assignment availability.  Matching must never
+    # fabricate this operational input from profile or feedback data.
+    is_available_for_assignment: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     biography: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now)

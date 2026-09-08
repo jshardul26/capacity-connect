@@ -3,6 +3,7 @@ import uuid
 from httpx import AsyncClient
 
 from app.ai_engine.competency_gap import (
+    compute_skill_gaps,
     match_trainers_for_subject,
     recommend_courses_cosine_similarity,
 )
@@ -35,6 +36,7 @@ def test_vector_engines_are_deterministic_and_explainable():
                 "full_name": "Radar Expert",
                 "years_of_experience": 15,
                 "satisfaction_rating": 5,
+                "availability_confirmed": True,
                 "expertise": [{"subject": "Doppler Weather Radar", "proficiency_level": "expert"}],
             },
             {
@@ -42,6 +44,7 @@ def test_vector_engines_are_deterministic_and_explainable():
                 "full_name": "NWP Expert",
                 "years_of_experience": 15,
                 "satisfaction_rating": 5,
+                "availability_confirmed": True,
                 "expertise": [{"subject": "Numerical Weather Prediction", "proficiency_level": "expert"}],
             },
         ],
@@ -52,6 +55,31 @@ def test_vector_engines_are_deterministic_and_explainable():
     assert matches[0]["trainer_id"] == "radar-trainer"
     assert matches[0]["expertise_similarity"] == 1.0
     assert matches[0]["composite_score"] == 1.0
+
+
+def test_skill_gap_uses_declared_operational_criticality_and_availability():
+    competencies = [
+        {"id": "radar", "name": "Radar", "domain": "Operations", "criticality_weight": 2.0},
+        {"id": "nwp", "name": "NWP", "domain": "Forecasting", "criticality_weight": 1.0},
+    ]
+    # Use a temporary canonical benchmark so the formula is tested directly.
+    from app.ai_engine.competency_gap import STANDARD_ROLE_BENCHMARKS
+    STANDARD_ROLE_BENCHMARKS["Test_Weighted_Role"] = {"title": "Test", "description": "Test", "requirements": {"Radar": 0.8, "NWP": 0.8}}
+    try:
+        result = compute_skill_gaps({"Radar": 0.4, "NWP": 0.4}, "Test_Weighted_Role", competencies)
+        assert result["total_gap_magnitude"] == 1.2
+        assert result["overall_readiness_percentage"] == 50.0
+        assert result["gaps"][0]["weighted_gap"] == 0.8
+    finally:
+        STANDARD_ROLE_BENCHMARKS.pop("Test_Weighted_Role", None)
+
+    unavailable = match_trainers_for_subject(
+        trainers_data=[{"user_id": "unavailable", "full_name": "Unavailable", "years_of_experience": 20,
+                        "satisfaction_rating": 5, "availability_confirmed": False,
+                        "expertise": [{"subject": "Radar", "proficiency_level": "expert"}]}],
+        subject="Radar", competency_id="radar", all_competencies=competencies,
+    )
+    assert unavailable == []
 
 
 async def get_admin_token(client: AsyncClient) -> str:
@@ -302,7 +330,7 @@ async def test_trainer_matching_algorithm(async_client: AsyncClient):
     await async_client.put(
         "/api/v1/trainer/profile",
         headers=trainer_headers,
-        json={"years_of_experience": 12.0}
+        json={"years_of_experience": 12.0, "is_available_for_assignment": True}
     )
 
     # 3. Admin matches trainer for subject

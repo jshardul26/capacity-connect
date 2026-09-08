@@ -7,6 +7,7 @@ class CompetencyBase(BaseModel):
     name: str = Field(..., max_length=150, description="Standardized competency name")
     domain: str = Field(..., max_length=100, description="Meteorological operational domain")
     description: Optional[str] = None
+    criticality_weight: float = Field(default=1.0, gt=0.0)
 
 
 class CompetencyCreate(CompetencyBase):
@@ -52,6 +53,7 @@ class CompetencyGapItem(BaseModel):
     required: float
     current: float
     gap: float
+    weighted_gap: float
     is_met: bool
 
 
@@ -109,6 +111,7 @@ class TrainerMatchItem(BaseModel):
     composite_score: float
     match_percentage: float
     matched_expertise: Optional[str] = None
+    availability_confirmed: bool
     rationale: str
 
 

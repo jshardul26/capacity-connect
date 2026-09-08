@@ -605,6 +605,14 @@ async def submit_course_feedback(
         )
         db.add(fb)
 
+    await db.flush()
+    await enqueue_local_mutation(db, "feedback", "UPSERT", {
+        "feedback_id": fb.id,
+        "course_id": course_id,
+        "user_id": current_user.id,
+        "rating": payload.rating,
+        "feedback_text": payload.feedback_text,
+    })
     await db.commit()
     await db.refresh(fb)
 

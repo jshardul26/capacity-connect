@@ -21,3 +21,4 @@ class SyncQueueItemResponse(BaseModel):
 class PackExportRequest(BaseModel):
     course_ids: list[str] = Field(min_length=1)
     package_title: str = Field(min_length=2, max_length=255)
+    encrypt: bool = Field(False, description="Seal the pack with AES-256-GCM before transfer.")

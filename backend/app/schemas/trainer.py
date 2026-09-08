@@ -240,6 +240,7 @@ class TrainerProfileUpdate(BaseModel):
     designation: Optional[str] = Field(None, max_length=100)
     division: Optional[str] = Field(None, max_length=100)
     years_of_experience: Optional[float] = Field(None, ge=0.0, le=70.0)
+    is_available_for_assignment: Optional[bool] = None
     biography: Optional[str] = Field(None, max_length=2000)
     avatar_url: Optional[str] = Field(None, max_length=500)
 
@@ -255,6 +256,7 @@ class TrainerProfileResponse(BaseModel):
     designation: Optional[str] = None
     division: Optional[str] = None
     years_of_experience: Optional[float] = 0.0
+    is_available_for_assignment: bool = False
     biography: Optional[str] = None
     avatar_url: Optional[str] = None
     created_at: datetime

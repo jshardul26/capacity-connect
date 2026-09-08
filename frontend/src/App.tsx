@@ -23,12 +23,14 @@ import { AssessmentCenterModal } from './components/assessment/AssessmentCenterM
 import { CompetencyDashboardModal } from './components/competency/CompetencyDashboardModal';
 import { useAuthStore } from './store/useAuthStore';
 import { healthService } from './services/api';
+import { createConnectivityProbe } from './services/connectivity';
 import { HealthResponse } from './types';
 
 export const App: React.FC = () => {
   const [appHealth, setAppHealth] = useState<HealthResponse | null>(null);
   const [isBrowserOnline, setIsBrowserOnline] = useState(navigator.onLine);
   const [pendingSyncEvents, setPendingSyncEvents] = useState<number | null>(null);
+  const isLanNode = window.location.hostname === 'capacityconnect.local';
   const {
     isAdminModalOpen,
     closeAdminModal,
@@ -48,22 +50,35 @@ export const App: React.FC = () => {
   } = useAuthStore();
 
   useEffect(() => {
-    // Probe backend health
-    healthService.getAppHealth()
-      .then(setAppHealth)
-      .catch(() => setAppHealth(null));
-
     // Restore authenticated session from localStorage if present
     loadSession();
   }, [loadSession]);
 
   useEffect(() => {
+    // Authoritative reachability probe: navigator.onLine is only an estimate,
+    // so poll the API health endpoint and drive the banner from the result.
     const updateConnectivity = () => setIsBrowserOnline(navigator.onLine);
     window.addEventListener('online', updateConnectivity);
     window.addEventListener('offline', updateConnectivity);
+
+    const probe = createConnectivityProbe(async () => {
+      try {
+        const health = await healthService.getAppHealth();
+        setAppHealth(health);
+        return !!health;
+      } catch {
+        setAppHealth((previous) => previous);
+        return false;
+      }
+    }, 20000, navigator.onLine);
+    const unsubscribe = probe.subscribe(setIsBrowserOnline);
+    probe.start();
+
     return () => {
       window.removeEventListener('online', updateConnectivity);
       window.removeEventListener('offline', updateConnectivity);
+      unsubscribe();
+      probe.stop();
     };
   }, []);
 
@@ -80,6 +95,11 @@ export const App: React.FC = () => {
       {!isBrowserOnline && (
         <div className="bg-amber-400 px-4 py-2 text-center text-xs font-semibold text-slate-950">
           Offline mode: locally cached courses, resources, progress, and assessment attempts remain available.
+        </div>
+      )}
+      {isLanNode && (
+        <div className="bg-sky-800 px-4 py-2 text-center text-xs font-semibold text-white">
+          Capacity Connect LAN learning node — authenticated local sessions are stored on this field station.
         </div>
       )}
       {isBrowserOnline && pendingSyncEvents !== null && pendingSyncEvents > 0 && (

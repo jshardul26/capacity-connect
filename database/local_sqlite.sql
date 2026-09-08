@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS trainer_profiles (
     designation TEXT,
     division TEXT,
     years_of_experience REAL DEFAULT 0.0,
+    is_available_for_assignment INTEGER NOT NULL DEFAULT 0,
     biography TEXT,
     created_at TEXT DEFAULT (datetime('now')),
     updated_at TEXT DEFAULT (datetime('now'))
@@ -251,10 +252,11 @@ CREATE TABLE IF NOT EXISTS assessment_answers (
 -- 7. Competencies
 CREATE TABLE IF NOT EXISTS competencies (
     id TEXT PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL,
-    domain TEXT NOT NULL,
+    name VARCHAR(150) UNIQUE NOT NULL,
+    domain VARCHAR(100) NOT NULL,
     description TEXT,
-    created_at TEXT DEFAULT (datetime('now'))
+    criticality_weight REAL NOT NULL DEFAULT 1.0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS trainee_competencies (

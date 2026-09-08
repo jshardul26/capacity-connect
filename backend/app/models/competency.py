@@ -29,6 +29,9 @@ class Competency(Base):
     name: Mapped[str] = mapped_column(String(150), unique=True, nullable=False, index=True)
     domain: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # The frozen gap formula multiplies each deficiency by this operational
+    # criticality value.  Existing canonical rows default to neutral weight 1.
+    criticality_weight: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_utc_now)
 
     # Relationships

@@ -26,6 +26,7 @@ class SyncQueue(Base):
     retry_count: Mapped[int] = mapped_column(Integer, default=0)
     client_signature: Mapped[str] = mapped_column(String(64), nullable=False, default="")
     next_attempt_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    processing_started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
     last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

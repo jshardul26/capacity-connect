@@ -1,0 +1,41 @@
+#!/bin/sh
+set -eu
+
+command=${1:-}
+interface=${2:-wlan0}
+unit_dir=/etc/systemd/system/capacity-connect.service.d
+
+case "$command" in
+  on)
+    install -d "$unit_dir"
+    cat > "$unit_dir/lan.conf" <<'EOF'
+[Service]
+ExecStart=
+ExecStart=/opt/capacity-connect/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+EOF
+    cat > /etc/dnsmasq.d/capacity-connect.conf <<EOF
+interface=$interface
+dhcp-range=192.168.4.20,192.168.4.200,12h
+address=/capacityconnect.local/192.168.4.1
+EOF
+    cat > /etc/hostapd/hostapd.conf <<EOF
+interface=$interface
+ssid=CapacityConnect-FieldNet
+hw_mode=g
+channel=6
+wpa=2
+wpa_passphrase=${CAPACITY_CONNECT_LAN_PASSPHRASE:?Set CAPACITY_CONNECT_LAN_PASSPHRASE}
+wpa_key_mgmt=WPA-PSK
+rsn_pairwise=CCMP
+EOF
+    systemctl daemon-reload
+    systemctl restart capacity-connect.service dnsmasq hostapd avahi-daemon
+    ;;
+  off)
+    rm -f "$unit_dir/lan.conf" /etc/dnsmasq.d/capacity-connect.conf
+    systemctl daemon-reload
+    systemctl restart capacity-connect.service
+    systemctl stop hostapd dnsmasq
+    ;;
+  *) echo "Usage: cc-lan-toggle on|off [wireless-interface]" >&2; exit 64 ;;
+esac

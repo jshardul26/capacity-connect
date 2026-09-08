@@ -7,6 +7,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-09-08
+### Added (Phases 8–14 Complete — Finalization)
+- Phase 8: match-trainer RBAC error resolved; schema synchronized for `competencies.criticality_weight` and `trainer_profiles.is_available_for_assignment`.
+- Phase 9: `.ccpack` export/import now supports AES-256-GCM sealed packs (`CCPCKENC1` envelope, SHA-256-derived key from `CONTENT_PACK_HMAC_SECRET`, `encrypt` export flag, tamper detection on import); `cryptography>=42` declared.
+- Phase 10: delta pull rewritten to carry published courses (modules/lessons/resources/assessments/competency yields), published assessments with questions, active announcements, approved users, and the full competency taxonomy; offline `apply_domain_event` mirrors the online flow (attempt → `TraineeCompetency` evidence upserts); admin-only `GET /sync/audit-logs` endpoint added; 4 sync contract tests passing.
+- Phase 11/12: OS asset tests and docs extended to cover the Field LAN mode stack (hostapd, dnsmasq, avahi), the `cc-lan-toggle` helper, and 4 systemd units; the previous "LAN intentionally excluded" claim removed.
+- Phase 13: extracted thread-safe sliding-window `SlidingWindowRateLimiter` with bounded key table, applied to auth-login in HTTP middleware (enabled outside the `testing` environment), 4 unit tests; trainer resource upload hardened with resource-type/extension allowlists, basename sanitization (path-traversal neutralization), streaming 500 MB cap (413), and content-manifest recording; upload security test added. bcrypt cost 12 verified.
+- Phase 14: Alembic integration (`alembic/env.py` imports all model modules) with auto-generated portable `initial_schema` migration (`5392463a2179`) verified `upgrade head`/`current`; frontend healthcheck added to `docker-compose.yml`; idempotent `backend/app/demo_seed.py` seeds approved demo trainers/trainees, IMD courses (RADAR-101, NWP-201), announcements, competency evidence, and sync state.
+- Frontend: Vitest test infrastructure (config + `npm test`) with 4 connectivity-probe tests; offline/online detection hardened with an authoritative periodic API health probe (`src/services/connectivity.ts`) replacing `navigator.onLine`-only logic; production build verified.
+- Validation boundaries documented: OS ISO/kiosk boot and physical LAN hotspot behavior cannot be exercised on a Windows build host (see `deployment/os/README.md`).
+
 ## [0.12.0] - 2026-09-08
 ### Added (Phases 10–11 — Synchronization Engine & Capacity Connect OS Complete)
 - Added authenticated `/sync/push`, `/sync/pull`, `/sync/status`, and local queue-run APIs with HMAC validation, immutable event-id deduplication, progress maximum conflict resolution, and delta timestamps.
@@ -14,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added Phase 10 sync event/state models and upgrade-safe SQLite queue columns; assessment seals now use HMAC-SHA256.
 - Added live frontend pending-sync status indicator for administrators.
 - Added a Debian 12 live-build Capacity Connect OS profile with persistent boot parameter, minimal education desktop packages, local FastAPI and timed sync systemd units, and Chromium app-mode kiosk startup.
-- Added build and persistent-Live-USB usage documentation. LAN services, hotspot configuration, and Phase 12 functionality are intentionally excluded.
+- Added build and persistent-Live-USB usage documentation. (LAN hotspot/config initially excluded; superseded by the Field LAN mode added in 0.13.0.)
 ## [0.10.0] - 2026-09-08
 ### Added (Phase 9 — Offline Architecture Complete)
 - SQLite local-node configuration now enables foreign keys, WAL journal mode, and durable local progress and assessment-attempt persistence.

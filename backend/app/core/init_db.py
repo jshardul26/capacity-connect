@@ -33,9 +33,16 @@ async def init_db() -> None:
                 ("client_signature", "TEXT NOT NULL DEFAULT ''"),
                 ("next_attempt_at", "DATETIME"),
                 ("last_error", "TEXT"),
+                ("processing_started_at", "DATETIME"),
             ):
                 if name not in existing:
                     await conn.execute(text(f"ALTER TABLE sync_queue ADD COLUMN {name} {definition}"))
+            competency_columns = (await conn.execute(text("PRAGMA table_info(competencies)"))).fetchall()
+            if "criticality_weight" not in {column[1] for column in competency_columns}:
+                await conn.execute(text("ALTER TABLE competencies ADD COLUMN criticality_weight FLOAT NOT NULL DEFAULT 1.0"))
+            profile_columns = (await conn.execute(text("PRAGMA table_info(trainer_profiles)"))).fetchall()
+            if "is_available_for_assignment" not in {column[1] for column in profile_columns}:
+                await conn.execute(text("ALTER TABLE trainer_profiles ADD COLUMN is_available_for_assignment BOOLEAN NOT NULL DEFAULT 0"))
 
     async with async_session_factory() as session:
         # 1. Seed Roles

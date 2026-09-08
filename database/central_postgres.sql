@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS trainer_profiles (
     designation VARCHAR(100),
     division VARCHAR(100),
     years_of_experience NUMERIC(4,1) DEFAULT 0.0,
+    is_available_for_assignment BOOLEAN NOT NULL DEFAULT FALSE,
     biography TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
@@ -260,6 +261,7 @@ CREATE TABLE IF NOT EXISTS competencies (
     name VARCHAR(150) UNIQUE NOT NULL,
     domain VARCHAR(100) NOT NULL,
     description TEXT,
+    criticality_weight FLOAT NOT NULL DEFAULT 1.0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 

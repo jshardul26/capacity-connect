@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+mkdir -p /var/capacity-connect/database /var/capacity-connect/content_store/{videos,presentations,study_materials,packages} /var/capacity-connect/metadata
+id capacityconnect >/dev/null 2>&1 || useradd --create-home --shell /bin/sh capacityconnect
+chown -R capacityconnect:capacityconnect /var/capacity-connect
+python3 -m venv /opt/capacity-connect/.venv
+/opt/capacity-connect/.venv/bin/pip install --no-cache-dir -r /opt/capacity-connect/backend/requirements.txt
+systemctl enable capacity-connect.service
+systemctl enable capacity-connect-sync.timer
+systemctl enable capacity-connect-kiosk.service
+chmod 0755 /usr/local/sbin/cc-lan-toggle

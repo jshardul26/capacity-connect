@@ -6,4 +6,5 @@ Wants=network-online.target
 Type=oneshot
 WorkingDirectory=/opt/capacity-connect/backend
 Environment=APP_MODE=local
+Environment=SQLITE_LOCAL_URL=sqlite+aiosqlite:////var/capacity-connect/database/capacity_connect_local.db
 ExecStart=/opt/capacity-connect/.venv/bin/python -m app.offline.sync_worker

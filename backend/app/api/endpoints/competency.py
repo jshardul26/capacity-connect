@@ -185,7 +185,7 @@ async def get_competency_gaps(
     # Fetch all competencies
     all_comps_res = await db.execute(select(Competency))
     all_comps = [
-        {"id": c.id, "name": c.name, "domain": c.domain}
+        {"id": c.id, "name": c.name, "domain": c.domain, "criticality_weight": c.criticality_weight}
         for c in all_comps_res.scalars().all()
     ]
 
@@ -230,7 +230,7 @@ async def get_course_recommendations(
     # 1. Fetch all competencies
     all_comps_res = await db.execute(select(Competency))
     all_competencies = [
-        {"id": c.id, "name": c.name, "domain": c.domain}
+        {"id": c.id, "name": c.name, "domain": c.domain, "criticality_weight": c.criticality_weight}
         for c in all_comps_res.scalars().all()
     ]
 
@@ -295,12 +295,12 @@ async def match_optimal_trainers(
     """
     Recommend optimal trainers for a given subject using deterministic explainable scoring:
     M(p, D) = 0.60 * CosineSim(E_p, D) + 0.25 * min(1.0, Y_p/15) + 0.15 * (S_p/5.0)
-    Access restricted to Admin and Trainer users.
+    Access restricted to administrators.
     """
-    if current_user.role.name not in ["admin", "trainer"]:
+    if current_user.role.name != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only administrators and trainers can run trainer-matching algorithms."
+            detail="Only administrators can run trainer-matching algorithms."
         )
 
     # Fetch all approved trainers with their profiles and expertise
@@ -327,7 +327,7 @@ async def match_optimal_trainers(
             for fb in crs.feedbacks:
                 if fb.rating:
                     ratings.append(fb.rating)
-        avg_rating = sum(ratings) / len(ratings) if ratings else 4.6
+        avg_rating = sum(ratings) / len(ratings) if ratings else 0.0
 
         exp_list = []
         if prof and prof.expertise:
@@ -345,6 +345,7 @@ async def match_optimal_trainers(
             "station_code": tr.station_code,
             "years_of_experience": years_exp,
             "satisfaction_rating": avg_rating,
+            "availability_confirmed": bool(prof and prof.is_available_for_assignment),
             "expertise": exp_list,
         })
 

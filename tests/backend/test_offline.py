@@ -91,6 +91,39 @@ async def test_pack_export_and_local_admin_import_authorization(async_client: As
 
 
 @pytest.mark.asyncio
+async def test_aes256_gcm_encrypted_pack_export_import_and_tamper_detection(async_client: AsyncClient):
+    _, trainer_token = await approved_user(async_client, "trainer")
+    trainer_headers = {"Authorization": f"Bearer {trainer_token}"}
+    course = await async_client.post("/api/v1/trainer/courses", headers=trainer_headers, json={
+        "title": "Encrypted Pack Course", "code": f"ENC-{uuid.uuid4().hex[:8]}", "description": "Sealed course",
+        "category": "Radar", "level": "beginner", "estimated_hours": 1,
+    })
+    assert course.status_code == 201
+    exported = await async_client.post("/api/v1/packs/export", headers=trainer_headers, json={
+        "course_ids": [course.json()["id"]], "package_title": f"sealed-{uuid.uuid4().hex[:6]}", "encrypt": True,
+    })
+    assert exported.status_code == 200
+    pack = await async_client.get(exported.json()["download_url"], headers=trainer_headers)
+    assert pack.status_code == 200
+    assert pack.content.startswith(b"CCPCKENC1"), "sealed packs must carry the AES-GCM envelope marker"
+
+    # Import of a sealed pack restores the same content.
+    imported = await async_client.post("/api/v1/packs/import",
+        headers={"Authorization": f"Bearer {await admin_token(async_client)}"},
+        files={"package_file": ("sealed.ccpack", pack.content, "application/octet-stream")})
+    assert imported.status_code == 200
+    assert imported.json()["courses_registered"] == 1
+
+    # A single flipped byte anywhere in the envelope must be rejected.
+    tampered = bytearray(pack.content)
+    tampered[-1] ^= 0x01
+    rejected = await async_client.post("/api/v1/packs/import",
+        headers={"Authorization": f"Bearer {await admin_token(async_client)}"},
+        files={"package_file": ("tampered.ccpack", bytes(tampered), "application/octet-stream")})
+    assert rejected.status_code == 422, "tampered encrypted pack must not be accepted"
+
+
+@pytest.mark.asyncio
 async def test_local_assessment_attempt_is_sealed_and_queued(async_client: AsyncClient):
     _, trainer_token = await approved_user(async_client, "trainer")
     _, trainee_token = await approved_user(async_client, "trainee")

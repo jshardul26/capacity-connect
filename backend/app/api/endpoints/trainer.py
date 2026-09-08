@@ -1,6 +1,7 @@
 import hashlib
 import json
 import logging
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,6 +20,7 @@ from app.models.trainer import (
     Assessment,
     Question,
 )
+from app.offline.storage import content_root, record_content_manifest
 from app.schemas.trainer import (
     TrainerProfileUpdate,
     TrainerProfileResponse,
@@ -98,6 +100,7 @@ async def get_my_profile(
         designation=profile.designation,
         division=profile.division,
         years_of_experience=profile.years_of_experience or 0.0,
+        is_available_for_assignment=profile.is_available_for_assignment,
         biography=profile.biography,
         avatar_url=profile.avatar_url,
         created_at=profile.created_at,
@@ -890,17 +893,53 @@ async def upload_trainer_resource(
 ):
     profile = await get_or_create_trainer_profile(current_user, db)
 
-    content = await file.read()
+    MAX_TRAINER_LIBRARY_FILE_SIZE = 500 * 1024 * 1024
+    ALLOWED_TRAINER_LIBRARY_TYPES = {"video", "presentation", "study_material", "image", "audio"}
+    ALLOWED_TRAINER_LIBRARY_EXTENSIONS = {
+        ".pdf", ".mp4", ".webm", ".mp3", ".wav", ".pptx", ".ppt",
+        ".docx", ".doc", ".jpg", ".jpeg", ".png", ".gif", ".zip",
+    }
+    if resource_type not in ALLOWED_TRAINER_LIBRARY_TYPES:
+        raise HTTPException(status_code=422, detail=f"Unsupported resource type '{resource_type}'.")
+
+    # Defend against path traversal and hidden executables: retain only the
+    # basename of the client-provided filename and require a known extension.
+    raw_name = file.filename or "resource.bin"
+    safe_name = Path(raw_name).name
+    suffix = Path(safe_name).suffix.lower()
+    if suffix not in ALLOWED_TRAINER_LIBRARY_EXTENSIONS:
+        raise HTTPException(status_code=422, detail="File type not allowed for trainer library uploads.")
+
+    # Streaming read with an explicit cap so oversized media cannot exhaust memory.
+    chunks = []
+    total = 0
+    while len(chunks) < MAX_TRAINER_LIBRARY_FILE_SIZE // (8 * 1024) + 1:
+        chunk = await file.read(8 * 1024)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > MAX_TRAINER_LIBRARY_FILE_SIZE:
+            raise HTTPException(status_code=413, detail="Uploaded content exceeds the 500 MB trainer library limit.")
+        chunks.append(chunk)
+    content = b"".join(chunks)
     file_size = len(content)
     checksum = hashlib.sha256(content).hexdigest()
-    file_path = f"/storage/trainer_library/{current_user.id}/{file.filename}"
+
+    # Persist bytes into the content store so the material remains available
+    # offline and verifiable; the database retains the checksummed reference.
+    root = content_root()
+    stored_relative_path = f"trainer_library/{current_user.id}/{safe_name}"
+    stored_path = root / stored_relative_path
+    stored_path.parent.mkdir(parents=True, exist_ok=True)
+    stored_path.write_bytes(content)
+    record_content_manifest(f"trainer-lib-{checksum[:16]}", stored_relative_path, checksum)
 
     item = TrainerLibrary(
         trainer_profile_id=profile.id,
         title=title.strip(),
         description=description.strip() if description else None,
         resource_type=resource_type,
-        file_path=file_path,
+        file_path=stored_relative_path,
         file_size_bytes=file_size,
         sha256_checksum=checksum,
         is_public_to_trainees=is_public_to_trainees,

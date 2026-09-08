@@ -21,7 +21,7 @@ def get_password_hash(password: str) -> str:
     """Generates a secure bcrypt hash for a plain password."""
     # Truncate to 72 bytes if necessary per bcrypt maximum length
     password_bytes = password.encode("utf-8")[:72]
-    salt = bcrypt.gensalt()
+    salt = bcrypt.gensalt(rounds=12)
     return bcrypt.hashpw(password_bytes, salt).decode("utf-8")
 
 
@@ -77,5 +77,4 @@ def decode_token(token: str) -> Dict[str, Any]:
     if is_token_revoked(token):
         raise JWTError("Token has been revoked.")
     return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-
 
